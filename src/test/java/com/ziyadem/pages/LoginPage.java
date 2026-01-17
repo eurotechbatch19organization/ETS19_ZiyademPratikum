@@ -26,7 +26,7 @@ public class LoginPage extends BasePage {
     }
 
     /**
-     * Login with credentials from configuration.properties
+     * Login with credentials from configuration.properties for changing password
      */
     public void loginForChangePassword() {
         String username = ConfigurationReader.get("Benutzername");
