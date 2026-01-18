@@ -39,3 +39,6 @@ Feature:Login Scenarios
     And The user clicks to login button
     Then The login error message should be displayed
 
+  Scenario: First Login
+    When The user enters valid email and password and clicks the Login button
+    Then The user should see the main page
