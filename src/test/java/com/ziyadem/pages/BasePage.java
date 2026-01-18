@@ -20,8 +20,19 @@ public abstract class BasePage {
     Actions actions = new Actions(Driver.get());
     WebDriverWait wait = new WebDriverWait(Driver.get(), Duration.ofSeconds(5));
 
+    @FindBy(xpath = "//a[@title='Anmelden']")
+    private WebElement userIcon;
 
+
+    /**
+     * Bu method web sayfasında ki kullanıcı ikonuna tıklar.
+     */
+    public void clickToUserIcon(){
+        userIcon.click();
+    }
 }
+
+
 
 
 
