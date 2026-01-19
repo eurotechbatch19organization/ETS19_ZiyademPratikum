@@ -39,10 +39,10 @@ public class LoginPage extends BasePage{
     /**
      * Bu method fake bir mail adresi yazıp hata mesajı almak için.
      */
-
     public void wrongTheUsername(){
         username.sendKeys(faker.internet().emailAddress());
     }
+
     /**
      * Bu method fake bir password adresi yazıp hata mesajı almak için.
      */
@@ -61,18 +61,6 @@ public class LoginPage extends BasePage{
     }
 
 
-
-
-
-    @FindBy(id = "username")
-    private WebElement usernameInput;
-
-    @FindBy(id = "password")
-    private WebElement passwordInput;
-
-    @FindBy(name = "login")
-    private WebElement loginButton;
-
     /**
      * Navigate to login page
      */
@@ -82,23 +70,37 @@ public class LoginPage extends BasePage{
     }
 
     /**
-     * Login with credentials from configuration.properties for changing password
+     * Login with credentials for change password tests
      */
     public void loginForChangePassword() {
-        String username = ConfigurationReader.get("Benutzername");
-        String password = ConfigurationReader.get("Passworth");
+        String usernameValue = ConfigurationReader.get("Benutzername");
+        String passwordValue = ConfigurationReader.get("Passworth");
 
-        BrowserUtils.waitForVisibility(usernameInput, 10);
-        usernameInput.clear();
-        usernameInput.sendKeys(username);
+        BrowserUtils.waitForVisibility(username, 10);
+        username.clear();
+        username.sendKeys(usernameValue);
 
-        passwordInput.clear();
-        passwordInput.sendKeys(password);
+        password.clear();
+        password.sendKeys(passwordValue);
 
-        loginButton.click();
-
+        BrowserUtils.waitForClickablility(loginBtn, 10);
+        loginBtn.click();
         BrowserUtils.waitForPageToLoad(15);
-        BrowserUtils.waitFor(3);
+    }
+
+    /**
+     * Check if login was successful
+     * Simply check if current URL is not the login page
+     */
+    public boolean isLoginSuccessful() {
+        BrowserUtils.waitForPageToLoad(10);
+
+        String currentUrl = Driver.get().getCurrentUrl();
+        String loginUrl = ConfigurationReader.get("url") + "mein-konto/";
+
+        // If URL changes = login is successful
+        return !currentUrl.equals(loginUrl);
     }
 }
+
 

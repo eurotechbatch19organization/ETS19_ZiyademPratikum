@@ -26,17 +26,19 @@ Feature:Login Scenarios
     And The user clicks to login button
     Then The login error message should be displayed
 
-
   Scenario: Empty Password Field TC05-[ZYD19-1]
     When The user enters valid email
     And The user leaves the password field blank
     And The user clicks to login button
     Then The login error message should be displayed
-  @wip
+
   Scenario: Both Fields TC06-[ZYD19-1]
     When The user leaves the email or username field blank
     And The user leaves the password field blank
     And The user clicks to login button
     Then The login error message should be displayed
+
+
+
 
 
