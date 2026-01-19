@@ -1,8 +1,4 @@
 package com.ziyadem.pages;
-
-
-import com.ziyadem.utilities.BrowserUtils;
-import com.ziyadem.utilities.ConfigurationReader;
 import com.ziyadem.utilities.Driver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
@@ -20,8 +16,18 @@ public abstract class BasePage {
     Actions actions = new Actions(Driver.get());
     WebDriverWait wait = new WebDriverWait(Driver.get(), Duration.ofSeconds(5));
 
+    @FindBy(xpath = "//a[@title='Anmelden']")
+    private WebElement userIcon;
 
+
+    /**
+     * Bu method web sayfasında ki kullanıcı ikonuna tıklar.
+     */
+    public void clickToUserIcon(){
+        userIcon.click();
+    }
 }
+
 
 
 
