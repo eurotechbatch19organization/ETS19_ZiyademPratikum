@@ -4,6 +4,7 @@ package com.ziyadem.pages;
 import com.ziyadem.utilities.BrowserUtils;
 import com.ziyadem.utilities.ConfigurationReader;
 import com.ziyadem.utilities.Driver;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
@@ -20,8 +21,28 @@ public abstract class BasePage {
     Actions actions = new Actions(Driver.get());
     WebDriverWait wait = new WebDriverWait(Driver.get(), Duration.ofSeconds(5));
 
-    @FindBy(xpath = "//a[@title='Anmelden']")
+    @FindBy(xpath = "//a[.//i[contains(@class,'icon-user')]]")
     private WebElement userIcon;
+
+    //@FindBy(xpath = "//a[@title='Anmelden']")
+    //private WebElement userIcon;
+
+    public WebElement getUserIcon() {
+        return userIcon;
+    }
+
+
+
+    public void openUserMenu(WebElement userIcon, WebElement logoutLink) {
+        JavascriptExecutor js = (JavascriptExecutor) Driver.get();
+        js.executeScript("window.scrollTo(0,0);");
+        js.executeScript(
+                "arguments[0].dispatchEvent(new MouseEvent('mouseover', {bubbles:true}));",
+                userIcon);
+        if (!logoutLink.isDisplayed()) {
+            userIcon.click();
+        }
+        }
 
 
     /**

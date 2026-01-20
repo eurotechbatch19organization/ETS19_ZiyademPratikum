@@ -5,11 +5,15 @@ import com.ziyadem.utilities.BrowserUtils;
 import com.ziyadem.utilities.ConfigurationReader;
 import com.ziyadem.utilities.Driver;
 import org.junit.Assert;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 
-public class LoginPage extends BasePage{
+import java.time.Duration;
+
+public class LoginPage extends BasePage {
 
     Faker faker = new Faker();
     @FindBy(xpath = "//input[@id='username']")
@@ -24,15 +28,21 @@ public class LoginPage extends BasePage{
     @FindBy(xpath = "//div[@class='message-container container alert-color medium-text-center']")
     private WebElement errorMessage;
 
-    public void enterTheUserName(){
+    @FindBy(xpath = "//a[contains(text(),'Abmelden')]")
+    private WebElement logoutLink;
+
+    @FindBy(xpath = "//li[contains(@class,'account-item')]//a[contains(normalize-space(.),'Abmelden')]")
+    private WebElement logoutDropdownLink;
+
+    public void enterTheUserName() {
         username.sendKeys(ConfigurationReader.get("email"));
     }
 
-    public void enterThePassword(){
+    public void enterThePassword() {
         password.sendKeys(ConfigurationReader.get("password"));
     }
 
-    public void clickToLoginButton(){
+    public void clickToLoginButton() {
         loginBtn.click();
     }
 
@@ -40,28 +50,59 @@ public class LoginPage extends BasePage{
      * Bu method fake bir mail adresi yazıp hata mesajı almak için.
      */
 
-    public void wrongTheUsername(){
+    public void wrongTheUsername() {
         username.sendKeys(faker.internet().emailAddress());
     }
+
     /**
      * Bu method fake bir password adresi yazıp hata mesajı almak için.
      */
-    public void wrongThePassword(){
+    public void wrongThePassword() {
         password.sendKeys(faker.internet().password());
     }
 
-    public void errorMessageDisplayed(){
+    public void errorMessageDisplayed() {
         Assert.assertTrue(errorMessage.isDisplayed());
     }
-    public void emptyEmail(){
+
+    public void emptyEmail() {
         username.click();
     }
-    public void emptyPassword(){
+
+    public void emptyPassword() {
         password.click();
     }
 
+    /**
+     * Testlerini GUEST ve LOGGED_IN ayrimi ile yapmak isteyenlere tek metod ile
+     * LOGGED_IN olmasini saglamaktadir ve LOGGED_IN olup olmadigini kontrol etmektedir.
+     */
+    public void loginAsValidUser() {
+        clickToUserIcon();
+        enterTheUserName();
+        enterThePassword();
+        clickToLoginButton();
+        verifyLoggedIn();
+    }
 
+    /**
+     * Bir kullanicinin login isleminden sonra basarili bir sekilde
+     * login olup olmadigini kontrol etmektedir.
+     */
+    private void verifyLoggedIn() {
 
+        BrowserUtils.scrollToTop();
+        BrowserUtils.hover(getUserIcon());
+        if (!BrowserUtils.isDisplayedSafe(logoutDropdownLink)) {
+            getUserIcon().click();
+        }
+
+        BrowserUtils.waitForVisibility(logoutDropdownLink, 5);
+        Assert.assertTrue(
+                "Login failed - Abmelden not visible in dropdown menu",
+                BrowserUtils.isDisplayedSafe(logoutDropdownLink)
+        );
+    }
 
 
     @FindBy(id = "username")
@@ -101,4 +142,3 @@ public class LoginPage extends BasePage{
         BrowserUtils.waitFor(3);
     }
 }
-

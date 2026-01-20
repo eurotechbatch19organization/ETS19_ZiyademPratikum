@@ -62,7 +62,7 @@ public class BrowserUtils {
      */
     public static void hover(WebElement element) {
         Actions actions = new Actions(Driver.get());
-        actions.moveToElement(element).perform();
+        actions.moveToElement(element).pause(Duration.ofMillis(400)).perform();
     }
 
     /**
@@ -497,6 +497,20 @@ public class BrowserUtils {
         }
         return placeholderTexts;
     }
+
+    public static void scrollToTop() {
+        JavascriptExecutor js = (JavascriptExecutor) Driver.get();
+        js.executeScript("window.scrollTo(0, 0);");
+    }
+
+    public static boolean isDisplayedSafe(WebElement element) {
+        try {
+            return element.isDisplayed();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
 
 
 }
