@@ -5,6 +5,7 @@ import com.ziyadem.utilities.BrowserUtils;
 import com.ziyadem.utilities.ConfigurationReader;
 import com.ziyadem.utilities.Driver;
 import org.junit.Assert;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 
@@ -38,10 +39,10 @@ public class LoginPage extends BasePage{
     /**
      * Bu method fake bir mail adresi yazıp hata mesajı almak için.
      */
-
     public void wrongTheUsername(){
         username.sendKeys(faker.internet().emailAddress());
     }
+
     /**
      * Bu method fake bir password adresi yazıp hata mesajı almak için.
      */
@@ -58,6 +59,7 @@ public class LoginPage extends BasePage{
     public void emptyPassword(){
         password.click();
     }
+
 
     /**
      * Navigate to login page
@@ -100,6 +102,5 @@ public class LoginPage extends BasePage{
         return !currentUrl.equals(loginUrl);
     }
 }
-
 
 

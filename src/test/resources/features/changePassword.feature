@@ -23,20 +23,3 @@ Feature: Change Password Functionality
     And user should be able to login with original password "TestPass123!"
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

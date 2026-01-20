@@ -1,5 +1,4 @@
 package com.ziyadem.pages;
-
 import com.ziyadem.utilities.BrowserUtils;
 import org.junit.Assert;
 import org.openqa.selenium.WebElement;
