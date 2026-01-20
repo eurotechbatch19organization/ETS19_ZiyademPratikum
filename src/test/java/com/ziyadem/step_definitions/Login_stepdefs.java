@@ -47,7 +47,7 @@ public class Login_stepdefs {
     }
     @When("The user leaves the email or username field blank")
     public void the_user_leaves_the_email_or_username_field_blank() {
-       loginPage.emptyEmail();
+        loginPage.emptyEmail();
     }
     @When("The user leaves the password field blank")
     public void the_user_leaves_the_password_field_blank() {
