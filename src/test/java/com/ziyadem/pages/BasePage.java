@@ -1,8 +1,4 @@
 package com.ziyadem.pages;
-
-
-import com.ziyadem.utilities.BrowserUtils;
-import com.ziyadem.utilities.ConfigurationReader;
 import com.ziyadem.utilities.Driver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
@@ -31,7 +27,6 @@ public abstract class BasePage {
         userIcon.click();
     }
 }
-
 
 
 
