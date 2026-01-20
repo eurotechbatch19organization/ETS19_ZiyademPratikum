@@ -28,11 +28,6 @@ public class LoginPage extends BasePage {
     @FindBy(xpath = "//div[@class='message-container container alert-color medium-text-center']")
     private WebElement errorMessage;
 
-    @FindBy(xpath = "//a[contains(text(),'Abmelden')]")
-    private WebElement logoutLink;
-
-    @FindBy(xpath = "//li[contains(@class,'account-item')]//a[contains(normalize-space(.),'Abmelden')]")
-    private WebElement logoutDropdownLink;
 
     public void enterTheUserName() {
         username.sendKeys(ConfigurationReader.get("email"));
@@ -79,26 +74,7 @@ public class LoginPage extends BasePage {
         enterTheUserName();
         enterThePassword();
         clickToLoginButton();
-        verifyLoggedIn();
-    }
-
-    /**
-     * Bir kullanicinin login isleminden sonra basarili bir sekilde
-     * login olup olmadigini kontrol etmektedir.
-     */
-    private void verifyLoggedIn() {
-
-        BrowserUtils.scrollToTop();
-        BrowserUtils.hover(getUserIcon());
-        if (!BrowserUtils.isDisplayedSafe(logoutDropdownLink)) {
-            getUserIcon().click();
-        }
-
-        BrowserUtils.waitForVisibility(logoutDropdownLink, 5);
-        Assert.assertTrue(
-                "Login failed - Abmelden not visible in dropdown menu",
-                BrowserUtils.isDisplayedSafe(logoutDropdownLink)
-        );
+        isLoginSuccessful();
     }
 
 

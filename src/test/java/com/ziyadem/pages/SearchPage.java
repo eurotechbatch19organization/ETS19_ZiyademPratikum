@@ -1,17 +1,13 @@
 package com.ziyadem.pages;
 
-import com.ziyadem.enums.UserType;
 import com.ziyadem.utilities.BrowserUtils;
-import org.junit.Assert;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebElement;
+import com.ziyadem.utilities.Driver;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.FindBy;
 
 import java.util.List;
 
 public class SearchPage extends BasePage {
-
-    LoginPage loginPage = new LoginPage();
 
     @FindBy(xpath = "//input[@id='woocommerce-product-search-field-0']")
     private WebElement searchBox;
@@ -28,20 +24,18 @@ public class SearchPage extends BasePage {
     @FindBy(css = ".search-results .product")
     public List<WebElement> resultItems;
 
+    @FindBy(css = "h1.product-title")
+    private WebElement productTitle;
 
-    //**************************************
-    @FindBy(css = "input[type='search']")
-    public WebElement searchInput;
+    @FindBy(css = ".search-results .product .woocommerce-loop-product__title")
+    private List<WebElement> resultItemTitles;
 
-    @FindBy(css = ".predictive-search")
-    public WebElement predictiveDropdown;
+    private By predictiveItems = By.cssSelector(".autocomplete-suggestions .autocomplete-suggestion");
 
-    @FindBy(css = ".predictive-search .item")
-    public List<WebElement> predictiveItems;
-
-    @FindBy(css = ".woocommerce-info, .no-products, .woocommerce-no-products-found")
+    @FindBy(css = ".message-container.container.medium-text-center")
     public WebElement noProductsMessage;
 
+    private By predictiveResultsContainer = By.cssSelector(".autocomplete-suggestions");
 
     /**
      * Bu method web sayfasında ki 'Search Box'a tıklar.
@@ -102,39 +96,74 @@ public class SearchPage extends BasePage {
                 .anyMatch(t -> t.contains(lastSearchedTerm.toLowerCase()));
     }
 
-
-    //****************************************************
-
-
     public String getFirstResultProductName() {
-        return resultItems.get(0).getText();
+        String name = resultItemTitles.get(0).getText().trim();
+        System.out.println("firstProductName = " + name);
+        return name;
     }
 
     public void clickFirstResultProduct() {
         resultItems.get(0).click();
     }
 
-    public void pressEnterOnSearchBar() {
-        searchInput.sendKeys(Keys.ENTER);
+    public boolean isProductTitleDisplayed() {
+        try {
+            System.out.println("productTitle.getText() = " + productTitle.getText());
+            return productTitle.isDisplayed();
+        } catch (NoSuchElementException e) {
+            return false;
+        }
     }
 
-    public boolean isPredictiveDropdownDisplayed() {
-        return predictiveDropdown.isDisplayed();
+    public String getProductTitleText() {
+        return productTitle.getText();
     }
 
-    public int getPredictiveItemsCount() {
-        return predictiveItems.size();
-    }
-
-    public String getFirstPredictiveItemText() {
-        return predictiveItems.get(0).getText();
-    }
-
-    public void clickFirstPredictiveItem() {
-        predictiveItems.get(0).click();
+    public String getSearchInputValue() {
+        String searchInputValue = searchBox.getAttribute("value");
+        System.out.println("searchInputValue = " + searchInputValue);
+        return searchBox.getAttribute("value").trim();
     }
 
     public String getNoProductsMessageText() {
         return noProductsMessage.getText();
+    }
+
+    public void pressEnterOnSearchBar() {
+        searchBox.sendKeys(Keys.ENTER);
+    }
+
+    public boolean isPredictiveDropdownDisplayed() {
+
+        try {
+            return BrowserUtils.waitForVisibility(predictiveResultsContainer, 5).isDisplayed();
+        } catch (TimeoutException e) {
+            return false;
+        }
+    }
+
+
+    public int getPredictiveItemsCount() {
+
+        try {
+            BrowserUtils.waitForVisibility(predictiveResultsContainer, 5);
+        } catch (TimeoutException e) {
+            return 0;
+        }
+        return Driver.get().findElements(predictiveResultsContainer).size();
+    }
+
+    public String getFirstPredictiveItemText() {
+        String raw = Driver.get().findElements(predictiveItems).get(0).getText().trim();
+        return raw.split("\\R")[0].trim();
+    }
+
+    public void clickFirstPredictiveItem() {
+        List<WebElement> items = Driver.get().findElements(predictiveItems);
+        items.get(0).click();
+    }
+
+    public void waitForPredictiveDropdown() {
+        BrowserUtils.waitForVisibility(predictiveResultsContainer, 5);
     }
 }

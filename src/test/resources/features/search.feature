@@ -1,3 +1,4 @@
+@wip
 Feature: Search functionality
   As a user
   I want to search for products
@@ -6,7 +7,7 @@ Feature: Search functionality
   Background:
     Given the user is on the home page
 
-  @wip1
+
   Scenario Outline: Search for an existing product using Search button
     Given the user is "<userType>"
     When the user enters "<productName>" into the search bar
@@ -21,7 +22,7 @@ Feature: Search functionality
       | LOGGED_IN | kahve       |
       | LOGGED_IN | çay         |
 
-  @first
+
   Scenario Outline: Navigate to product detail page from search results
     Given the user is "<userType>"
     When the user enters "<productName>" into the search bar
@@ -31,49 +32,49 @@ Feature: Search functionality
     And the displayed product should match the selected product
 
     Examples:
-      | userType | productName |
-      | guest    | bal         |
-      | loggedIn | kahve       |
+      | userType  | productName |
+      | guest     | bal         |
+      | LOGGED_IN | kahve       |
 
-  @first
+
   Scenario Outline: Display product not found message for non-existing product
     Given the user is "<userType>"
-    When the user enters "invalidProduct123" into the search bar
+    When the user enters "<productName>" into the search bar
     And the user clicks the Search button
     Then no products should be listed
     And the "product not found" message should be displayed
 
     Examples:
-      | userType |
-      | guest    |
-      | loggedIn |
+      | userType  | productName |
+      | guest     | lamba       |
+      | LOGGED_IN | lamba       |
 
-  @first
+
   Scenario Outline: Search for a product using Enter key
     Given the user is "<userType>"
     When the user enters "<productName>" into the search bar
     And the user presses the Enter key
     Then search results should be displayed
-    And related products should be listed
+    And at least one related product should be listed
 
     Examples:
-      | userType | productName |
-      | guest    | bal         |
-      | loggedIn | çay         |
+      | userType  | productName |
+      | guest     | bal         |
+      | LOGGED_IN | çay         |
 
-  @first
+
   Scenario Outline: Search using predictive dropdown
     Given the user is "<userType>"
     When the user enters "<productName>" into the search bar
     Then predictive search results should be displayed in the dropdown
     When the user selects a product from the dropdown
     Then the product detail page should be displayed
-    And the displayed product should match the selected product
+    And the displayed product should match the selected dropdown product
 
     Examples:
-      | userType | productName |
-      | guest    | bal         |
-      | loggedIn | kahve       |
+      | userType  | productName |
+      | guest     | bal         |
+      | LOGGED_IN | kahve       |
 
 
 

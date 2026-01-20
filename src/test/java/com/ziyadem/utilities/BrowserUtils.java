@@ -497,20 +497,4 @@ public class BrowserUtils {
         }
         return placeholderTexts;
     }
-
-    public static void scrollToTop() {
-        JavascriptExecutor js = (JavascriptExecutor) Driver.get();
-        js.executeScript("window.scrollTo(0, 0);");
-    }
-
-    public static boolean isDisplayedSafe(WebElement element) {
-        try {
-            return element.isDisplayed();
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-
-
 }

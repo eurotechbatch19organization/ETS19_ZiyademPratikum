@@ -14,32 +14,8 @@ public abstract class BasePage {
         PageFactory.initElements(Driver.get(), this);
     }
 
-    Actions actions = new Actions(Driver.get());
-    WebDriverWait wait = new WebDriverWait(Driver.get(), Duration.ofSeconds(5));
-
-    @FindBy(xpath = "//a[.//i[contains(@class,'icon-user')]]")
+    @FindBy(xpath = "//a[@title='Anmelden']")
     private WebElement userIcon;
-
-    //@FindBy(xpath = "//a[@title='Anmelden']")
-    //private WebElement userIcon;
-
-    public WebElement getUserIcon() {
-        return userIcon;
-    }
-
-
-
-    public void openUserMenu(WebElement userIcon, WebElement logoutLink) {
-        JavascriptExecutor js = (JavascriptExecutor) Driver.get();
-        js.executeScript("window.scrollTo(0,0);");
-        js.executeScript(
-                "arguments[0].dispatchEvent(new MouseEvent('mouseover', {bubbles:true}));",
-                userIcon);
-        if (!logoutLink.isDisplayed()) {
-            userIcon.click();
-        }
-        }
-
 
     /**
      * Bu method web sayfasında ki kullanıcı ikonuna tıklar.
