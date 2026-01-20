@@ -13,7 +13,11 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 import java.util.List;
 
+import static com.ziyadem.utilities.Driver.driver;
+
 public class ShoppingPage extends BasePage{
+
+
 
     @FindBy(xpath = "(//a[@href='https://ziyadem.de/produkt-kategory/kuruyemis'])[1]")
     private WebElement product;
@@ -24,29 +28,71 @@ public class ShoppingPage extends BasePage{
     @FindBy(xpath = "//input[@value='+']")
     private WebElement plusButton;
 
-    @FindBy(xpath = "//input[@value='-']")
+    @FindBy(xpath = "//input[@class='ux-quantity__button ux-quantity__button--minus button minus is-form']")
     private WebElement minusButton;
 
     @FindBy(xpath = "//a[text()='Warenkorb anzeigen']")
     private WebElement viewShoppingCartBtn;
 
-    public void clickViewShoppingCartBtn(){
-        viewShoppingCartBtn.click();
-    }
+    @FindBy(xpath = "//button[@name='update_cart']")
+    private WebElement updateCart;
 
+    @FindBy(xpath = "//input[@name='quantity']")
+    private WebElement quantity;
+
+    By quantityLocator = By.xpath("//input[@name='quantity']");
+    public int getQuantity(){
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+
+        WebElement quantity = wait.until(
+                ExpectedConditions.presenceOfElementLocated(quantityLocator)
+        );
+
+        String text = quantity.getAttribute("value").trim();
+        return Integer.parseInt(text);
+    }
 
     /**
      * Bu metod ürün artırma + butonuna tıklar.
      */
-    public void clickPlusButton(){
+    public void clickPlusAndValidate(){
+        int before = getQuantity();
         plusButton.click();
-    }
+        int after = getQuantity();
 
+        Assert.assertEquals(after,before+1);
+    }
     /**
      * Bu metod ürün eksiltme - butonuna tıklar.
      */
-    public void clickMinusButton(){
+    public void clickMinusAndValidate() {
+        int before = getQuantity();
         minusButton.click();
+        int after = getQuantity();
+
+        Assert.assertEquals(after, before - 1);
+    }
+
+    /**
+     * Bu metod miktar alanını günceller
+     */
+    public void setUpdateCart(int quantity){
+        this.quantity.clear();
+        this.quantity.sendKeys(String.valueOf(quantity));
+    }
+
+    /**
+     * Bu metod alışveriş sepetini güncelle butonuna tıklar.
+     */
+    public void clickUpdateCart(){
+        updateCart.click();
+    }
+
+    /**
+     * Bu metod alışveriş sepetini görüntüle butonuna tıklar.
+     */
+    public void clickViewShoppingCartBtn(){
+        viewShoppingCartBtn.click();
     }
 
 
@@ -65,13 +111,11 @@ public class ShoppingPage extends BasePage{
         String expectedUrl= "https://ziyadem.de/einkaufswagen";
         String actualUrl= Driver.get().getCurrentUrl();
         Assert.assertEquals(expectedUrl,actualUrl);
-
     }
 
     /**
      * Bu method geçici sadece kuruyemis menusune tıklar.
      */
-
     public void clickToAnyProduct(){
         product.click();
     }
@@ -112,7 +156,6 @@ public class ShoppingPage extends BasePage{
      * Bu metod ürün sepete eklenmiş mi kontrol eder.
      * @param productName
      */
-
     public void verifyProductIsInCart(String productName) {
         WebDriverWait wait = new WebDriverWait(Driver.get(), Duration.ofSeconds(20));
 
@@ -139,40 +182,8 @@ public class ShoppingPage extends BasePage{
 
     /**
      * Bu metod ürün adedini kontrol eder.
-     * @param productName
-     * @param expectedQty
+     *
      */
 
-    public void verifyProductQuantity(String productName, int expectedQty) {
-        WebDriverWait wait = new WebDriverWait(Driver.get(), Duration.ofSeconds(20));
-
-        // Sepette ürünlerin gelmesini bekle
-        wait.until(ExpectedConditions.presenceOfElementLocated(
-                By.cssSelector("tr.cart_item")
-        ));
-
-        List<WebElement> cartRows =
-                Driver.get().findElements(By.cssSelector("tr.cart_item"));
-
-        for (WebElement row : cartRows) {
-            String name = row.findElement(By.cssSelector("td.product-name")).getText();
-
-            if (name.contains(productName)) {
-                WebElement qtyInput =
-                        row.findElement(By.cssSelector("td.product-quantity input"));
-
-                int actualQty = Integer.parseInt(qtyInput.getAttribute("value"));
-
-                Assert.assertEquals(
-                        "Ürün adedi hatalı: " + productName,
-                        expectedQty,
-                        actualQty
-                );
-                return;
-            }
-        }
-
-        Assert.fail("Sepette ürün bulunamadı: " + productName);
-    }
 
 }

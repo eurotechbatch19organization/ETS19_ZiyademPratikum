@@ -1,3 +1,4 @@
+@tulay
 Feature: Shopping Cart Functionality
 
   Background:
@@ -18,11 +19,24 @@ Feature: Shopping Cart Functionality
     When The user views the shopping cart
     Then The user verifies the product "Kabuklu" is in the shopping cart
 
-  @tulay
-    Scenario: Verify that the user is able to increase the item’s quantity TC03-[ZYD19-9]:
+
+    Scenario:Verify that the user is able to increase and decrease the item’s quantity TC03-[ZYD19-9]: TC05-[ZYD19-9]
     When The user clicks any product
     Then The user clicks "Kabuklu" product
     When The user increases the product quantity by clicking the + button
+    When The user decreases the product quantity by clicking the – button
     When The user clicks the add to cart icon
     When The user views the shopping cart
-   # Then The user verifies that the product quantity has increased productName "Kabuklu"  expectedQty 2
+
+
+    Scenario: Verify that when hovering over the cart icon, a quick view of the cart contents is displayed TC04-[ZYD19-9]
+    Then The user hovers over the cart icon and verifies that the cart contents are displayed quickly
+
+
+    Scenario: When more than 10 units of the same product are added to the cart, the system should warn the user TC06-[ZYD19-9]
+    When The user clicks any product
+    When The user clicks "Kabuklu" product
+    Then The user enters a quantity of 11 in the product quantity field
+    When The user clicks the add to cart icon
+    When The user views the shopping cart
+
