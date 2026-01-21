@@ -101,6 +101,28 @@ public class LoginPage extends BasePage{
         // If URL changes = login is successful
         return !currentUrl.equals(loginUrl);
     }
+
+    /**
+     * Login with specific password (for TC03 - testing new password)
+     * Used when we need to login with a password different from config
+     * @param usernameValue - username/email
+     * @param passwordValue - password to use for login
+     */
+    public void loginWithPassword(String usernameValue, String passwordValue) {
+        BrowserUtils.waitForVisibility(username, 10);
+        username.clear();
+        username.sendKeys(usernameValue);
+
+        BrowserUtils.waitForVisibility(password, 10);
+        password.clear();
+        password.sendKeys(passwordValue);
+
+        BrowserUtils.waitForClickablility(loginBtn, 10);
+        loginBtn.click();
+        BrowserUtils.waitForPageToLoad(15);
+
+        System.out.println("✓ Logged in with username: " + usernameValue);
+    }
 }
 
 

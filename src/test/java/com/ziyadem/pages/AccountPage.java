@@ -36,5 +36,3 @@ public class AccountPage extends BasePage {
         BrowserUtils.waitForPageToLoad(10);
     }
 }
-
-

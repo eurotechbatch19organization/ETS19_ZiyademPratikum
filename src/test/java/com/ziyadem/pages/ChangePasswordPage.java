@@ -1,4 +1,5 @@
 package com.ziyadem.pages;
+
 import com.ziyadem.utilities.BrowserUtils;
 import org.junit.Assert;
 import org.openqa.selenium.WebElement;
@@ -93,5 +94,45 @@ public class ChangePasswordPage extends BasePage {
         Assert.assertTrue("Success message not found. Expected: " + expectedMessage +
                         ", Actual: " + actualMessage,
                 actualMessage.contains(expectedMessage));
+    }
+
+    /**
+     * Enter current password
+     */
+    public void enterCurrentPassword(String password) {
+        BrowserUtils.waitForVisibility(currentPasswordField, 10);
+        currentPasswordField.clear();
+        currentPasswordField.sendKeys(password);
+    }
+
+    /**
+     * Enter new password
+     */
+    public void enterNewPassword(String newPassword) {
+        BrowserUtils.waitForVisibility(newPasswordField, 10);
+        newPasswordField.clear();
+        newPasswordField.sendKeys(newPassword);
+    }
+
+    /**
+     * Enter confirm password
+     */
+    public void enterConfirmPassword(String confirmPassword) {
+        BrowserUtils.waitForVisibility(confirmPasswordField, 10);
+        confirmPasswordField.clear();
+        confirmPasswordField.sendKeys(confirmPassword);
+    }
+
+    /**
+     * Reset password back to original
+     * @param currentPassword - the password that is currently set (new password)
+     * @param originalPassword - the original password to restore
+     */
+    public void resetPasswordToOriginal(String currentPassword, String originalPassword) {
+        enterCurrentPassword(currentPassword);
+        enterNewPassword(originalPassword);
+        enterConfirmPassword(originalPassword);
+        clickSaveChanges();
+        System.out.println("✓ Password reset from '" + currentPassword + "' back to '" + originalPassword + "'");
     }
 }
