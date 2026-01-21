@@ -17,12 +17,30 @@ public abstract class BasePage {
     @FindBy(xpath = "//a[@title='Anmelden']")
     private WebElement userIcon;
 
+    @FindBy(xpath = "//a[@title='Warenkorb']")
+    private WebElement shoppingCart;
+
     /**
      * Bu method web sayfasında ki kullanıcı ikonuna tıklar.
      */
     public void clickToUserIcon(){
         userIcon.click();
     }
+
+    /**
+     * Bu method web sayfasında ki shopping cart ikonuna tıklar.
+     */
+    public void clickShoppingCart(){
+        shoppingCart.click();
+    }
+    /**
+     * Bu metod Shopping Cart ikonuna hower yapar.
+     */
+    public void hoverShoppingCart(){
+        actions.moveToElement(shoppingCart).perform();
+    }
+
+
 }
 
 
