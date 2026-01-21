@@ -13,7 +13,7 @@ public abstract class BasePage {
     {
         PageFactory.initElements(Driver.get(), this);
     }
-
+    Actions actions=new Actions(Driver.get());
     @FindBy(xpath = "//a[@title='Anmelden']")
     private WebElement userIcon;
 
