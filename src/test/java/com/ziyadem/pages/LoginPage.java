@@ -5,11 +5,15 @@ import com.ziyadem.utilities.BrowserUtils;
 import com.ziyadem.utilities.ConfigurationReader;
 import com.ziyadem.utilities.Driver;
 import org.junit.Assert;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 
-public class LoginPage extends BasePage{
+import java.time.Duration;
+
+public class LoginPage extends BasePage {
 
     Faker faker = new Faker();
     @FindBy(xpath = "//input[@id='username']")
@@ -24,7 +28,8 @@ public class LoginPage extends BasePage{
     @FindBy(xpath = "//div[@class='message-container container alert-color medium-text-center']")
     private WebElement errorMessage;
 
-    public void enterTheUserName(){
+
+    public void enterTheUserName() {
         username.sendKeys(ConfigurationReader.get("email"));
     }
 
@@ -60,6 +65,27 @@ public class LoginPage extends BasePage{
         password.click();
     }
 
+    /**
+     * Testlerini GUEST ve LOGGED_IN ayrimi ile yapmak isteyenlere tek metod ile
+     * LOGGED_IN olmasini saglamaktadir ve LOGGED_IN olup olmadigini kontrol etmektedir.
+     */
+    public void loginAsValidUser() {
+        clickToUserIcon();
+        enterTheUserName();
+        enterThePassword();
+        clickToLoginButton();
+        isLoginSuccessful();
+    }
+
+
+    @FindBy(id = "username")
+    private WebElement usernameInput;
+
+    @FindBy(id = "password")
+    private WebElement passwordInput;
+
+    @FindBy(name = "login")
+    private WebElement loginButton;
 
     /**
      * Navigate to login page

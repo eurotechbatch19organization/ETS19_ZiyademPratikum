@@ -3,7 +3,7 @@ Feature:Login Scenarios
   Background:
     Given The user is on the main login page
 
-  Scenario: Succesfull Login TC01-[ZYD19-1]
+  Scenario: Successful Login TC01-[ZYD19-1]
     When The user enters valid email
     And The user enters valid password
     Then The user clicks to login button

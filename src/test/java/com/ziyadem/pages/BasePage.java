@@ -1,5 +1,6 @@
 package com.ziyadem.pages;
 import com.ziyadem.utilities.Driver;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
@@ -12,9 +13,6 @@ public abstract class BasePage {
     {
         PageFactory.initElements(Driver.get(), this);
     }
-
-    Actions actions = new Actions(Driver.get());
-    WebDriverWait wait = new WebDriverWait(Driver.get(), Duration.ofSeconds(5));
 
     @FindBy(xpath = "//a[@title='Anmelden']")
     private WebElement userIcon;
