@@ -22,4 +22,36 @@ Feature: Change Password Functionality
     And user logs out
     And user should be able to login with original password "TestPass123!"
 
+  Scenario: TC03 - Password is successfully changed with valid data
+    When user enters current password "TestPass123!"
+    And user enters new password "NewSecure@Pass456"
+    And user enters confirm password "NewSecure@Pass456"
+    And user clicks Save Changes button
+    Then success message "Kontodetails erfolgreich geändert." should be displayed
+    And user logs out
+    And user should be able to login with new password "NewSecure@Pass456"
+    And user clicks account details page
+    And user resets password back to original "TestPass123!"
+    And user logs out
+    And user should be able to login with original password "TestPass123!"
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

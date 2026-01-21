@@ -1,7 +1,9 @@
 package com.ziyadem.step_definitions;
+
 import com.ziyadem.pages.AccountPage;
 import com.ziyadem.pages.ChangePasswordPage;
 import com.ziyadem.pages.LoginPage;
+import com.ziyadem.utilities.ConfigurationReader;
 import com.ziyadem.utilities.Driver;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -13,6 +15,8 @@ public class ChangePassword_stepdefs {
     LoginPage loginPage = new LoginPage();
     AccountPage accountPage = new AccountPage();
     ChangePasswordPage changePasswordPage = new ChangePasswordPage();
+
+    private String newPassword = "";
 
     @Given("user opens browser")
     public void user_opens_browser() {
@@ -101,4 +105,47 @@ public class ChangePassword_stepdefs {
                 loginPage.isLoginSuccessful());
         System.out.println("✓ User can still log in with original password (" + password + ")");
     }
+
+    @When("user enters current password {string}")
+    public void user_enters_current_password(String currentPassword) {
+        changePasswordPage.enterCurrentPassword(currentPassword);
+        System.out.println("✓ Current password entered: " + currentPassword);
+    }
+
+    @When("user enters new password {string}")
+    public void user_enters_new_password(String password) {
+        this.newPassword = password;
+        changePasswordPage.enterNewPassword(password);
+        System.out.println("✓ New password entered: " + password);
+        System.out.println("  - Valid password (12+ chars, uppercase, lowercase, numbers, special chars)");
+    }
+
+    @When("user enters confirm password {string}")
+    public void user_enters_confirm_password(String confirmPassword) {
+        changePasswordPage.enterConfirmPassword(confirmPassword);
+        System.out.println("✓ Confirm password entered: " + confirmPassword);
+    }
+
+    @Then("user should be able to login with new password {string}")
+    public void user_should_be_able_to_login_with_new_password(String password) {
+        String username = ConfigurationReader.get("Benutzername");
+
+        loginPage.navigateToLoginPage();
+        loginPage.loginWithPassword(username, password);
+
+        Assert.assertTrue("Login failed with new password: " + password,
+                loginPage.isLoginSuccessful());
+        System.out.println("✓ Successfully logged in with new password: " + password);
+    }
+
+    @Then("user resets password back to original {string}")
+    public void user_resets_password_back_to_original(String originalPassword) {
+        changePasswordPage.resetPasswordToOriginal(this.newPassword, originalPassword);
+        changePasswordPage.verifySuccessMessage("Kontodetails erfolgreich geändert.");
+
+        System.out.println("✓ Password successfully reset:");
+        System.out.println("  - From: " + this.newPassword);
+        System.out.println("  - To: " + originalPassword);
+    }
+
 }
