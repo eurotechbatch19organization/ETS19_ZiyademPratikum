@@ -21,7 +21,7 @@ Feature: Change Password Functionality
     And user should remain on change password page
     And user logs out
     And user should be able to login with original password "TestPass123!"
-@wip
+
   Scenario: TC03 - Password is successfully changed with valid data
     When user enters current password "TestPass123!"
     And user enters new password "NewSecure@Pass456"
