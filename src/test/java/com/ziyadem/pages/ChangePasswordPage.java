@@ -1,9 +1,12 @@
 package com.ziyadem.pages;
 
 import com.ziyadem.utilities.BrowserUtils;
+import com.ziyadem.utilities.ConfigurationReader;
+import com.ziyadem.utilities.Driver;
 import org.junit.Assert;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
 
 public class ChangePasswordPage extends BasePage {
 
@@ -26,7 +29,9 @@ public class ChangePasswordPage extends BasePage {
      * Check if user is on change password page
      */
     public boolean isOnChangePasswordPage() {
-        BrowserUtils.waitForVisibility(currentPasswordField, 10);
+        BrowserUtils.waitForPageToLoad(10);
+        BrowserUtils.waitFor(2);
+        BrowserUtils.waitForVisibility(currentPasswordField, 20);
         return currentPasswordField.isDisplayed() &&
                 newPasswordField.isDisplayed() &&
                 confirmPasswordField.isDisplayed();
@@ -82,7 +87,10 @@ public class ChangePasswordPage extends BasePage {
         BrowserUtils.waitForClickablility(saveChangesButton, 10);
         BrowserUtils.scrollToElement(saveChangesButton);
         BrowserUtils.clickWithJS(saveChangesButton);
-        BrowserUtils.waitForPageToLoad(10);
+        BrowserUtils.waitForPageToLoad(15);
+        BrowserUtils.waitFor(2);
+
+        PageFactory.initElements(Driver.get(), this);
     }
 
     /**
@@ -129,10 +137,37 @@ public class ChangePasswordPage extends BasePage {
      * @param originalPassword - the original password to restore
      */
     public void resetPasswordToOriginal(String currentPassword, String originalPassword) {
+        BrowserUtils.waitForPageToLoad(15);
+        BrowserUtils.waitFor(3);
+        PageFactory.initElements(Driver.get(), this);
+        BrowserUtils.waitForVisibility(currentPasswordField, 20);
+
         enterCurrentPassword(currentPassword);
         enterNewPassword(originalPassword);
         enterConfirmPassword(originalPassword);
         clickSaveChanges();
         System.out.println("✓ Password reset from '" + currentPassword + "' back to '" + originalPassword + "'");
+    }
+
+    /**
+     * Verify user session is still active
+     */
+    public void verifyUserSessionActive() {
+        String accountDetailsUrl = ConfigurationReader.get("url") + "mein-konto/edit-account/";
+        Driver.get().get(accountDetailsUrl);
+        BrowserUtils.waitForPageToLoad(15);
+        BrowserUtils.waitFor(3);
+
+        BrowserUtils.waitForVisibility(currentPasswordField, 15);
+        Assert.assertTrue("User session is not active",
+                currentPasswordField.isDisplayed());
+
+        String currentUrl = Driver.get().getCurrentUrl();
+        Assert.assertTrue("User is not on account details page",
+                currentUrl.contains("edit-account"));
+
+        System.out.println("✓ User session is active");
+        System.out.println("  - Still on change password page");
+        System.out.println("  - Not redirected to login");
     }
 }

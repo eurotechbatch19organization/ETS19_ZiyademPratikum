@@ -15,6 +15,7 @@ public class AccountPage extends BasePage {
         String url = ConfigurationReader.get("url") + "mein-konto/edit-account/";
         Driver.get().get(url);
         BrowserUtils.waitForPageToLoad(10);
+        BrowserUtils.waitFor(5);
         System.out.println("✓ Navigated to Account Details: " + url);
     }
 
