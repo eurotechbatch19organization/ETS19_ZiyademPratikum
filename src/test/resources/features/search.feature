@@ -1,4 +1,4 @@
-@wip
+
 Feature: Search functionality
   As a user
   I want to search for products
