@@ -15,9 +15,7 @@ import java.util.List;
 
 import static com.ziyadem.utilities.Driver.driver;
 
-public class ShoppingPage extends BasePage{
-
-
+public class ProductPage extends BasePage{
 
     @FindBy(xpath = "(//a[@href='https://ziyadem.de/produkt-kategory/kuruyemis'])[1]")
     private WebElement product;
@@ -41,6 +39,23 @@ public class ShoppingPage extends BasePage{
     private WebElement quantity;
 
     By quantityLocator = By.xpath("//input[@name='quantity']");
+
+    // Ürün sayfasındaki son seçilen miktarı burada tutacağız
+    private int urunSayfasiMiktari;
+
+    By productQuantityInput = By.cssSelector("form.cart input.qty");
+
+    // Miktar değiştirildikten sonra çağrılır
+    public void urunMiktariniKaydet() {
+        WebElement input = driver.findElement(productQuantityInput);
+        this.urunSayfasiMiktari = Integer.parseInt(input.getAttribute("value"));
+    }
+
+    public int getUrunSayfasiMiktari() {
+        return urunSayfasiMiktari;
+    }
+
+
     public int getQuantity(){
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
 
@@ -55,15 +70,21 @@ public class ShoppingPage extends BasePage{
     /**
      * Bu metod ürün artırma + butonuna tıklar.
      */
+    public void clickPlusButton(){
+        plusButton.click();
+    }
+    /**
+     * Bu metod ürün artırma + butonuna tıklar ve ürün miktarını doğrular
+     */
     public void clickPlusAndValidate(){
         int before = getQuantity();
         plusButton.click();
         int after = getQuantity();
-
         Assert.assertEquals(after,before+1);
     }
+
     /**
-     * Bu metod ürün eksiltme - butonuna tıklar.
+     * Bu metod ürün eksiltme - butonuna tıklar ve ürün miktarını doğrular
      */
     public void clickMinusAndValidate() {
         int before = getQuantity();
@@ -94,8 +115,6 @@ public class ShoppingPage extends BasePage{
     public void clickViewShoppingCartBtn(){
         viewShoppingCartBtn.click();
     }
-
-
 
     /**
      * Bu metod sepete ekle butonuna tıklar.
