@@ -7,6 +7,6 @@ Feature: Navigation bar visibility
     Then the navigation bar should be visible at the top of the page
     When the user navigates to another page
     Then the navigation bar should still be visible at the top of the page
-  @wip
+
   Scenario: All main categories are displayed in the navigation bar-TC002[ZYD19-5]
     Then all main categories should be visible in the navigation bar
