@@ -77,16 +77,6 @@ public class LoginPage extends BasePage {
         isLoginSuccessful();
     }
 
-
-    @FindBy(id = "username")
-    private WebElement usernameInput;
-
-    @FindBy(id = "password")
-    private WebElement passwordInput;
-
-    @FindBy(name = "login")
-    private WebElement loginButton;
-
     /**
      * Navigate to login page
      */

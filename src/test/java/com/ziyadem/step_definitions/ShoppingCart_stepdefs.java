@@ -68,11 +68,9 @@ public class ShoppingCart_stepdefs {
         loginPage.hoverShoppingCart();
     }
 
-
     @Then("The user enters a quantity of {int} in the product quantity field")
     public void the_user_enters_a_quantity_of_in_the_product_quantity_field(int quantity) {
         shoppingPage.setUpdateCart(quantity);
-
     }
 
 
