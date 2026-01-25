@@ -15,6 +15,11 @@ public class ShoppingCartPage extends BasePage{
         return Integer.parseInt(input.getAttribute("value"));
     }
 
+    /**
+     * Bu metod 
+     * @param urunSayfasiMiktari
+     */
+
     public void urunMiktarlariEsitMi(int urunSayfasiMiktari) {
         int sepetMiktari = getSepetMiktari();
 
