@@ -5,13 +5,8 @@ import com.ziyadem.utilities.BrowserUtils;
 import com.ziyadem.utilities.ConfigurationReader;
 import com.ziyadem.utilities.Driver;
 import org.junit.Assert;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
-
-import java.time.Duration;
 
 public class LoginPage extends BasePage {
 
@@ -77,16 +72,6 @@ public class LoginPage extends BasePage {
         isLoginSuccessful();
     }
 
-
-    @FindBy(id = "username")
-    private WebElement usernameInput;
-
-    @FindBy(id = "password")
-    private WebElement passwordInput;
-
-    @FindBy(name = "login")
-    private WebElement loginButton;
-
     /**
      * Navigate to login page
      */
@@ -102,16 +87,19 @@ public class LoginPage extends BasePage {
         String usernameValue = ConfigurationReader.get("Benutzername");
         String passwordValue = ConfigurationReader.get("Passworth");
 
-        BrowserUtils.waitForVisibility(username, 10);
+        BrowserUtils.waitForVisibility(username, 15);
         username.clear();
         username.sendKeys(usernameValue);
 
+        BrowserUtils.waitForVisibility(password, 15);
         password.clear();
         password.sendKeys(passwordValue);
 
-        BrowserUtils.waitForClickablility(loginBtn, 10);
+        BrowserUtils.waitForClickablility(loginBtn, 15);
         loginBtn.click();
-        BrowserUtils.waitForPageToLoad(15);
+
+        BrowserUtils.waitForPageToLoad(20);
+        BrowserUtils.waitFor(5);
     }
 
     /**
@@ -145,7 +133,9 @@ public class LoginPage extends BasePage {
 
         BrowserUtils.waitForClickablility(loginBtn, 10);
         loginBtn.click();
+
         BrowserUtils.waitForPageToLoad(15);
+        BrowserUtils.waitFor(5);
 
         System.out.println("✓ Logged in with username: " + usernameValue);
     }

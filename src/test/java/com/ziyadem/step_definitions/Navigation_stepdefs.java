@@ -8,17 +8,17 @@ import io.cucumber.java.en.When;
 import org.junit.Assert;
 import org.openqa.selenium.WebElement;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Navigation_stepdefs {
 
     NavigationBarPage navigationBarPage = new NavigationBarPage();
+    String homeUrl;
 
-    @Then("the navigation bar should be visible at the top of the page")
-    public void the_navigation_bar_should_be_visible_at_the_top_of_the_page() {
-        Assert.assertTrue(
-                "Navigation bar is not visible!",
-                navigationBarPage.getNavigationBar().isDisplayed());
+    @Then("the navigation bar should be visible")
+    public void the_navigation_bar_should_be_visible() {
+        Assert.assertTrue(navigationBarPage.getNavigationBar().isDisplayed());
     }
 
     @When("the user navigates to another page")
@@ -26,23 +26,75 @@ public class Navigation_stepdefs {
         Driver.get().navigate().to(ConfigurationReader.get("url") + "/register");
     }
 
-    @Then("the navigation bar should still be visible at the top of the page")
-    public void the_navigation_bar_should_still_be_visible_at_the_top_of_the_page() {
-        Assert.assertTrue(
-                "Navigation bar disappeared after page navigation!",
-                navigationBarPage.getNavigationBar().isDisplayed());
+    @Then("the navigation bar should still be visible")
+    public void the_navigation_bar_should_still_be_visible() {
+        Assert.assertTrue(navigationBarPage.getNavigationBar().isDisplayed());
     }
 
-    @Then("all main categories should be visible in the navigation bar")
-    public void all_main_categories_should_be_visible_in_the_navigation_bar() {
-
-        List<String> actualCategories = navigationBarPage.getMainCategoryNames();
-        List<String> expectedCategories = navigationBarPage.getExpectedMainCategoryNames();
+    @Then("all main categories should be displayed")
+    public void all_main_categories_should_be_displayed() {
         Assert.assertEquals(
-                "Main categories in navigation bar do not match expected list!",
-                expectedCategories,
-                actualCategories
+                navigationBarPage.getExpectedMainCategoryNames(),
+                navigationBarPage.getActualMainCategoryNames()
         );
+    }
+
+    @When("the user hovers over all categories with submenus")
+    public void the_user_hovers_over_all_categories_with_submenus() {
+        for (WebElement category : navigationBarPage.getCategoriesWithSubmenu()) {
+            navigationBarPage.hover(category);
+        }
+    }
+
+    @Then("dropdown menus should be visible")
+    public void dropdown_menus_should_be_visible() {
+        for (WebElement category : navigationBarPage.getCategoriesWithSubmenu()) {
+            navigationBarPage.hover(category);
+            WebElement dropdown = navigationBarPage.waitForDropdownToBeVisible(category);
+            Assert.assertTrue(
+                    "Dropdown is not visible for category: " + category.getText(),
+                    dropdown.isDisplayed()
+            );
+        }
+    }
+
+    @When("the user clicks on each category without submenu")
+    public void the_user_clicks_on_each_category_without_submenu() {
+        homeUrl = navigationBarPage.getCurrentUrl();
+
+        for (WebElement category : navigationBarPage.getCategoriesWithoutSubmenu()) {
+            navigationBarPage.click(category);
+            Assert.assertNotEquals(homeUrl, navigationBarPage.getCurrentUrl());
+            Assert.assertFalse(navigationBarPage.getPageTitle().isBlank());
+            navigationBarPage.navigateBack();
+        }
+    }
+
+    @Then("the related category pages should be opened")
+    public void the_related_category_pages_should_be_opened() {
+        // doğrulama yukarıda yapıldı
+    }
+
+    @When("the user hovers over a category with submenu")
+    public void the_user_hovers_over_a_category_with_submenu() {
+        navigationBarPage.hover(
+                navigationBarPage.getCategoriesWithSubmenu().get(0)
+        );
+    }
+
+    @When("clicks the first subcategory link")
+    public void clicks_the_first_subcategory_link() {
+        navigationBarPage.getFirstSubCategoryLink().click();
+    }
+
+    @Then("a valid product listing or landing page should be opened")
+    public void a_valid_product_listing_or_landing_page_should_be_opened() {
+        String url = navigationBarPage.getCurrentUrl().toLowerCase();
+        String title = navigationBarPage.getPageTitle().toLowerCase();
+
+        Assert.assertFalse(url.contains("404"));
+        Assert.assertFalse(title.contains("404"));
+        Assert.assertFalse(title.isBlank());
     }
 
 }
