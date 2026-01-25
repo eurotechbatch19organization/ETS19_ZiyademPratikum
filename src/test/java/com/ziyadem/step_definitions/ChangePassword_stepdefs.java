@@ -162,4 +162,11 @@ public class ChangePassword_stepdefs {
         System.out.println("  - User is still logged in");
         System.out.println("  - Session remains active after password change");
     }
+
+    @Then("error message {string} should be displayed")
+    public void error_message_should_be_displayed(String expectedErrorMessage) {
+        changePasswordPage.verifyErrorMessage(expectedErrorMessage);
+        System.out.println("✓ Error message displayed: " + expectedErrorMessage);
+    }
+
 }

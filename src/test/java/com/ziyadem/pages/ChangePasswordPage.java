@@ -25,14 +25,16 @@ public class ChangePasswordPage extends BasePage {
     @FindBy(xpath = "//div[contains(@class,'woocommerce-message')]")
     private WebElement successMessage;
 
+    @FindBy(xpath = "//ul[@class='woocommerce-error message-wrapper']//div[@class='message-container container alert-color medium-text-center']")
+    private WebElement errorMessage;
+
+    private static final int DEFAULT_TIMEOUT = 10;
+
     /**
      * Check if user is on change password page
      */
     public boolean isOnChangePasswordPage() {
-        BrowserUtils.waitForPageToLoad(10);
-        BrowserUtils.waitFor(2);
-        BrowserUtils.waitForVisibility(currentPasswordField, 20);
-        return currentPasswordField.isDisplayed() &&
+        return BrowserUtils.waitForVisibility(currentPasswordField, DEFAULT_TIMEOUT).isDisplayed() &&
                 newPasswordField.isDisplayed() &&
                 confirmPasswordField.isDisplayed();
     }
@@ -41,66 +43,49 @@ public class ChangePasswordPage extends BasePage {
      * Verify Current Password field is visible
      */
     public void verifyCurrentPasswordFieldVisible() {
-        BrowserUtils.waitForVisibility(currentPasswordField, 10);
         Assert.assertTrue("Current Password field is not visible",
-                currentPasswordField.isDisplayed());
+                BrowserUtils.waitForVisibility(currentPasswordField, DEFAULT_TIMEOUT).isDisplayed());
     }
 
     /**
      * Verify New Password field is visible
      */
     public void verifyNewPasswordFieldVisible() {
-        BrowserUtils.waitForVisibility(newPasswordField, 10);
         Assert.assertTrue("New Password field is not visible",
-                newPasswordField.isDisplayed());
+                BrowserUtils.waitForVisibility(newPasswordField, DEFAULT_TIMEOUT).isDisplayed());
     }
 
     /**
      * Verify Confirm Password field is visible
      */
     public void verifyConfirmPasswordFieldVisible() {
-        BrowserUtils.waitForVisibility(confirmPasswordField, 10);
         Assert.assertTrue("Confirm Password field is not visible",
-                confirmPasswordField.isDisplayed());
+                BrowserUtils.waitForVisibility(confirmPasswordField, DEFAULT_TIMEOUT).isDisplayed());
     }
 
     /**
      * Leave a specific password field blank
      */
     public void leaveFieldBlank(String fieldName) {
-        if (fieldName.equals("Current Password")) {
-            BrowserUtils.waitForVisibility(currentPasswordField, 10);
-            currentPasswordField.clear();
-        } else if (fieldName.equals("New Password")) {
-            BrowserUtils.waitForVisibility(newPasswordField, 10);
-            newPasswordField.clear();
-        } else if (fieldName.equals("Confirm New Password")) {
-            BrowserUtils.waitForVisibility(confirmPasswordField, 10);
-            confirmPasswordField.clear();
-        }
+        WebElement field = getFieldByName(fieldName);
+        BrowserUtils.waitForVisibility(field, DEFAULT_TIMEOUT).clear();
     }
 
     /**
      * Click Save Changes button
      */
     public void clickSaveChanges() {
-        BrowserUtils.waitForClickablility(saveChangesButton, 10);
-        BrowserUtils.scrollToElement(saveChangesButton);
-        BrowserUtils.clickWithJS(saveChangesButton);
-        BrowserUtils.waitForPageToLoad(15);
-        BrowserUtils.waitFor(2);
-
-        PageFactory.initElements(Driver.get(), this);
+        WebElement button = BrowserUtils.waitForClickablility(saveChangesButton, DEFAULT_TIMEOUT);
+        BrowserUtils.scrollToElement(button);
+        BrowserUtils.clickWithJS(button);
     }
 
     /**
      * Verify success message is displayed
      */
     public void verifySuccessMessage(String expectedMessage) {
-        BrowserUtils.waitForVisibility(successMessage, 10);
-        String actualMessage = successMessage.getText().trim();
-        Assert.assertTrue("Success message not found. Expected: " + expectedMessage +
-                        ", Actual: " + actualMessage,
+        String actualMessage = BrowserUtils.waitForVisibility(successMessage, DEFAULT_TIMEOUT).getText().trim();
+        Assert.assertTrue("Success message not found. Expected: " + expectedMessage + ", Actual: " + actualMessage,
                 actualMessage.contains(expectedMessage));
     }
 
@@ -108,40 +93,30 @@ public class ChangePasswordPage extends BasePage {
      * Enter current password
      */
     public void enterCurrentPassword(String password) {
-        BrowserUtils.waitForVisibility(currentPasswordField, 10);
-        currentPasswordField.clear();
-        currentPasswordField.sendKeys(password);
+        fillField(currentPasswordField, password);
     }
 
     /**
      * Enter new password
      */
     public void enterNewPassword(String newPassword) {
-        BrowserUtils.waitForVisibility(newPasswordField, 10);
-        newPasswordField.clear();
-        newPasswordField.sendKeys(newPassword);
+        fillField(newPasswordField, newPassword);
     }
 
     /**
      * Enter confirm password
      */
     public void enterConfirmPassword(String confirmPassword) {
-        BrowserUtils.waitForVisibility(confirmPasswordField, 10);
-        confirmPasswordField.clear();
-        confirmPasswordField.sendKeys(confirmPassword);
+        fillField(confirmPasswordField, confirmPassword);
     }
 
     /**
      * Reset password back to original
-     * @param currentPassword - the password that is currently set (new password)
+     *
+     * @param currentPassword  - the password that is currently set (new password)
      * @param originalPassword - the original password to restore
      */
     public void resetPasswordToOriginal(String currentPassword, String originalPassword) {
-        BrowserUtils.waitForPageToLoad(15);
-        BrowserUtils.waitFor(3);
-        PageFactory.initElements(Driver.get(), this);
-        BrowserUtils.waitForVisibility(currentPasswordField, 20);
-
         enterCurrentPassword(currentPassword);
         enterNewPassword(originalPassword);
         enterConfirmPassword(originalPassword);
@@ -155,19 +130,48 @@ public class ChangePasswordPage extends BasePage {
     public void verifyUserSessionActive() {
         String accountDetailsUrl = ConfigurationReader.get("url") + "mein-konto/edit-account/";
         Driver.get().get(accountDetailsUrl);
-        BrowserUtils.waitForPageToLoad(15);
-        BrowserUtils.waitFor(3);
 
-        BrowserUtils.waitForVisibility(currentPasswordField, 15);
-        Assert.assertTrue("User session is not active",
-                currentPasswordField.isDisplayed());
+        BrowserUtils.waitForPageToLoad(10);
 
-        String currentUrl = Driver.get().getCurrentUrl();
+        PageFactory.initElements(Driver.get(), this);
+
+        BrowserUtils.waitForVisibility(currentPasswordField, 10);
         Assert.assertTrue("User is not on account details page",
-                currentUrl.contains("edit-account"));
+                Driver.get().getCurrentUrl().contains("edit-account"));
 
         System.out.println("✓ User session is active");
-        System.out.println("  - Still on change password page");
-        System.out.println("  - Not redirected to login");
+        System.out.println("  - On account details page");
+        System.out.println("  - Not redirected to login page");
+    }
+
+    /**
+     * Verify error message is displayed
+     */
+    public void verifyErrorMessage(String expectedMessage) {
+        String actualMessage = BrowserUtils.waitForVisibility(errorMessage, DEFAULT_TIMEOUT).getText().trim();
+        boolean messageFound = actualMessage.contains("Dein derzeitiges Passwort ist nicht korrekt") ||
+                actualMessage.contains("Dein aktuelles Passwort ist nicht korrekt");
+        Assert.assertTrue("Error message not found. Expected password error, Actual: '" + actualMessage + "'",
+                messageFound);
+    }
+
+    // Helper methods
+    private void fillField(WebElement field, String text) {
+        WebElement element = BrowserUtils.waitForVisibility(field, ChangePasswordPage.DEFAULT_TIMEOUT);
+        element.clear();
+        element.sendKeys(text);
+    }
+
+    private WebElement getFieldByName(String fieldName) {
+        switch (fieldName) {
+            case "Current Password":
+                return currentPasswordField;
+            case "New Password":
+                return newPasswordField;
+            case "Confirm New Password":
+                return confirmPasswordField;
+            default:
+                throw new IllegalArgumentException("Unknown field: " + fieldName);
+        }
     }
 }
