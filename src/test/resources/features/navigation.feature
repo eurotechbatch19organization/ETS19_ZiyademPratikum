@@ -1,4 +1,4 @@
-
+@wip
 Feature: Navigation bar functionality
 
   Background:
@@ -24,5 +24,12 @@ Feature: Navigation bar functionality
     When the user hovers over a category with submenu
     And clicks the first subcategory link
     Then a valid product listing or landing page should be opened
+
+  Scenario: Category link should not redirect to wrong page - TC008
+    When the user hovers over a category with submenu
+    And clicks any subcategory link
+    Then the category page should not be a wrong, empty or 404 page
+
+
 
 

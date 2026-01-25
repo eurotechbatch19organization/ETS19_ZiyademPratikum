@@ -97,4 +97,16 @@ public class Navigation_stepdefs {
         Assert.assertFalse(title.isBlank());
     }
 
+    @When("clicks any subcategory link")
+    public void clicks_any_subcategory_link() {
+        navigationBarPage.clickAnySubCategoryLink();
+    }
+
+    @Then("the category page should not be a wrong, empty or 404 page")
+    public void the_category_page_should_not_be_a_wrong_empty_or_404_page() {
+        Assert.assertTrue(navigationBarPage.isNotWrongCategoryPage());
+    }
+
+
+
 }
