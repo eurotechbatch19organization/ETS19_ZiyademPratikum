@@ -5,8 +5,11 @@ import com.ziyadem.utilities.BrowserUtils;
 import com.ziyadem.utilities.ConfigurationReader;
 import com.ziyadem.utilities.Driver;
 import org.junit.Assert;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
+
+import java.util.List;
 
 public class LoginPage extends BasePage {
 
@@ -22,6 +25,9 @@ public class LoginPage extends BasePage {
 
     @FindBy(xpath = "//div[@class='message-container container alert-color medium-text-center']")
     private WebElement errorMessage;
+
+    @FindBy(xpath = "//div[@class='message-container container alert-color medium-text-center']")
+    private WebElement loginErrorMessage;
 
 
     public void enterTheUserName() {
@@ -116,6 +122,18 @@ public class LoginPage extends BasePage {
         return !currentUrl.equals(loginUrl);
     }
 
+    public boolean isLoginFailed() {
+        List<WebElement> errorMessages = Driver.get().findElements(
+                By.xpath("//div[@class='message-container container alert-color medium-text-center']")
+        );
+
+        if (errorMessages.size() > 0) {
+            return errorMessages.get(0).isDisplayed();
+        }
+
+        return false;
+    }
+
     /**
      * Login with specific password (for TC03 - testing new password)
      * Used when we need to login with a password different from config
@@ -138,6 +156,20 @@ public class LoginPage extends BasePage {
         BrowserUtils.waitFor(5);
 
         System.out.println("✓ Logged in with username: " + usernameValue);
+    }
+
+    public void verifyLoginErrorMessage() {
+        BrowserUtils.waitForVisibility(loginErrorMessage, 10);
+        String errorText = loginErrorMessage.getText().trim();
+
+        boolean errorFound = errorText.contains("Fehler") ||
+                errorText.contains("nicht korrekt") ||
+                errorText.contains("Passwort vergessen");
+
+        Assert.assertTrue("Login error message not found. Actual: '" + errorText + "'",
+                errorFound);
+
+        System.out.println("  - Error message: " + errorText);
     }
 }
 

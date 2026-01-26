@@ -73,7 +73,32 @@ Scenario: TC04 - Password is successfully updated and success message is display
     And user should remain on change password page
     And user logs out
     And user should be able to login with original password "TestPass123!"
-
+  @jasmin
+  Scenario: TC08 - Error message when new password and confirm password don't match
+    When user enters current password "TestPass123!"
+    And user enters new password "NewPassword123!@"
+    And user enters confirm password "DifferentPass123!@"
+    And user clicks Save Changes button
+    Then error message "Die neuen Passwörter stimmen nicht überein." should be displayed
+    And user should remain on change password page
+    And user logs out
+    And user should be able to login with original password "TestPass123!"
+  @jasmin
+  Scenario: TC09 - User cannot login with old password after successful password change
+    When user enters current password "TestPass123!"
+    And user enters new password "NewSecure@Pass456"
+    And user enters confirm password "NewSecure@Pass456"
+    And user clicks Save Changes button
+    Then success message "Kontodetails erfolgreich geändert." should be displayed
+    And user logs out
+    And user navigates to login page
+    When user tries to login with old password "TestPass123!"
+    Then login should fail with error message
+    And user should be able to login with new password "NewSecure@Pass456"
+    And user clicks account details page
+    And user resets password back to original "TestPass123!"
+    And user logs out
+    And user should be able to login with original password "TestPass123!"
 
 
 

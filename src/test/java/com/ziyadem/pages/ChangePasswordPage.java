@@ -149,10 +149,12 @@ public class ChangePasswordPage extends BasePage {
      */
     public void verifyErrorMessage(String expectedMessage) {
         String actualMessage = BrowserUtils.waitForVisibility(errorMessage, DEFAULT_TIMEOUT).getText().trim();
-        boolean messageFound = actualMessage.contains("Dein derzeitiges Passwort ist nicht korrekt") ||
-                actualMessage.contains("Dein aktuelles Passwort ist nicht korrekt");
-        Assert.assertTrue("Error message not found. Expected password error, Actual: '" + actualMessage + "'",
-                messageFound);
+
+        Assert.assertTrue("Error message not found. Expected: '" + expectedMessage +
+                        "', Actual: '" + actualMessage + "'",
+                actualMessage.contains(expectedMessage));
+
+        System.out.println("✓ Error message verified: " + actualMessage);
     }
 
     // Helper methods
