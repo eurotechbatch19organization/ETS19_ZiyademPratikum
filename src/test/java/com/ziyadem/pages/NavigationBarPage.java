@@ -51,9 +51,6 @@ public class NavigationBarPage extends BasePage{
      */
     public List<WebElement> getCategoriesWithoutSubmenu() {return categoriesWithoutSubmenu;}
 
-
-
-
     /**
      * Ana menüde olması beklenen
      * kategori isimlerini döndürür
@@ -90,8 +87,6 @@ public class NavigationBarPage extends BasePage{
         return names;
     }
 
-
-
     /**
      * Verilen element üzerine mouse hover işlemi yapar
      */
@@ -127,8 +122,6 @@ public class NavigationBarPage extends BasePage{
      */
     public String getPageTitle() {return Driver.get().getTitle();}
 
-
-
     /**
      * Alt menüsü bulunan ilk ana kategoriye hover yapar
      * ve bu kategoriye ait ilk sub kategori linkini döndürür
@@ -147,10 +140,34 @@ public class NavigationBarPage extends BasePage{
         WebDriverWait wait = new WebDriverWait(Driver.get(), Duration.ofSeconds(5));
         return wait.until(
                 ExpectedConditions.visibilityOf(
-                        getDropdown(category)
-                )
+                        getDropdown(category))
         );
     }
+
+    /**
+     * Hover yapılan kategorinin dropdown’undaki
+     * rastgele (ilk) subcategory linkini tıklar
+     */
+    public void clickAnySubCategoryLink() {
+        WebElement category = categoriesWithSubmenu.get(0);
+        hover(category);
+        WebElement dropdown = waitForDropdownToBeVisible(category);
+        dropdown.findElement(By.xpath(".//a")).click();
+    }
+
+    /**
+     * Açılan sayfanın yanlış veya hatalı
+     * (404 / boş / alakasız) olmadığını kontrol eder
+     */
+    public boolean isNotWrongCategoryPage() {
+        String url = getCurrentUrl().toLowerCase();
+        String title = getPageTitle().toLowerCase();
+
+        return !url.contains("404")
+                && !title.contains("404")
+                && !title.isBlank();
+    }
+
 
 
 }
