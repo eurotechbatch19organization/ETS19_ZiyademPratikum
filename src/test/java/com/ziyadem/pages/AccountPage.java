@@ -8,14 +8,19 @@ import org.openqa.selenium.WebElement;
 
 public class AccountPage extends BasePage {
 
+    private static final int DEFAULT_TIMEOUT = 20;
+
     /**
      * Navigate directly to Account Details page
      */
     public void clickAccountDetailsPage() {
         String url = ConfigurationReader.get("url") + "mein-konto/edit-account/";
         Driver.get().get(url);
-        BrowserUtils.waitForPageToLoad(10);
+
+        BrowserUtils.waitForPageToLoad(DEFAULT_TIMEOUT);
         BrowserUtils.waitFor(5);
+        BrowserUtils.waitForVisibility(By.id("password_current"), DEFAULT_TIMEOUT);
+
         System.out.println("✓ Navigated to Account Details: " + url);
     }
 
@@ -23,17 +28,15 @@ public class AccountPage extends BasePage {
      * Logout from the system
      */
     public void logout() {
-        // Navigate to main account page
         String accountUrl = ConfigurationReader.get("url") + "mein-konto/";
         Driver.get().get(accountUrl);
-        BrowserUtils.waitForPageToLoad(10);
+        BrowserUtils.waitForPageToLoad(DEFAULT_TIMEOUT);
 
-        // Get logout link href and navigate
-        WebElement abmeldenLink = Driver.get().findElement(By.partialLinkText("Abmelden"));
-        BrowserUtils.waitForVisibility(abmeldenLink, 10);
+        String logoutHref = Driver.get()
+                .findElement(By.partialLinkText("Abmelden"))
+                .getAttribute("href");
 
-        String logoutHref = abmeldenLink.getAttribute("href");
         Driver.get().get(logoutHref);
-        BrowserUtils.waitForPageToLoad(10);
+        BrowserUtils.waitForPageToLoad(DEFAULT_TIMEOUT);
     }
 }
