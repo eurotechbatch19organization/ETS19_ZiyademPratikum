@@ -4,6 +4,7 @@ import com.ziyadem.utilities.BrowserUtils;
 import com.ziyadem.utilities.ConfigurationReader;
 import com.ziyadem.utilities.Driver;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 
 public class AccountPage extends BasePage {
 

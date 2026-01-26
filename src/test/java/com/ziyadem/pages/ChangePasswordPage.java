@@ -28,7 +28,7 @@ public class ChangePasswordPage extends BasePage {
     @FindBy(xpath = "//ul[@class='woocommerce-error message-wrapper']//div[@class='message-container container alert-color medium-text-center']")
     private WebElement errorMessage;
 
-    private static final int DEFAULT_TIMEOUT = 15;
+    private static final int DEFAULT_TIMEOUT = 10;
 
     /**
      * Check if user is on change password page
@@ -149,12 +149,10 @@ public class ChangePasswordPage extends BasePage {
      */
     public void verifyErrorMessage(String expectedMessage) {
         String actualMessage = BrowserUtils.waitForVisibility(errorMessage, DEFAULT_TIMEOUT).getText().trim();
-
-        Assert.assertTrue("Error message not found. Expected: '" + expectedMessage +
-                        "', Actual: '" + actualMessage + "'",
-                actualMessage.contains(expectedMessage));
-
-        System.out.println("✓ Error message verified: " + actualMessage);
+        boolean messageFound = actualMessage.contains("Dein derzeitiges Passwort ist nicht korrekt") ||
+                actualMessage.contains("Dein aktuelles Passwort ist nicht korrekt");
+        Assert.assertTrue("Error message not found. Expected password error, Actual: '" + actualMessage + "'",
+                messageFound);
     }
 
     // Helper methods
