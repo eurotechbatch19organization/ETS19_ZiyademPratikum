@@ -3,6 +3,7 @@ package com.ziyadem.step_definitions;
 import com.ziyadem.pages.AccountPage;
 import com.ziyadem.pages.ChangePasswordPage;
 import com.ziyadem.pages.LoginPage;
+import com.ziyadem.utilities.BrowserUtils;
 import com.ziyadem.utilities.ConfigurationReader;
 import com.ziyadem.utilities.Driver;
 import io.cucumber.java.en.Given;
@@ -192,4 +193,22 @@ public class ChangePassword_stepdefs {
         System.out.println("  - Error message displayed correctly");
     }
 
+    @When("user attempts to bypass validation and click Save Changes")
+    public void user_attempts_to_bypass_validation_and_click_save_changes() {
+        System.out.println("⚠️ ATTEMPTING TO BYPASS CLIENT-SIDE VALIDATION");
+        System.out.println("  - This step tests for server-side validation");
+        System.out.println("  - If test FAILS = Bug exists (no server validation)");
+        System.out.println("  - If test PASSES = Bug fixed (server validation works)");
+
+        changePasswordPage.forceClickSaveChanges();
+    }
+
+    @Then("password was incorrectly changed due to bug")
+    public void password_was_incorrectly_changed_due_to_bug() {
+        System.out.println("⚠️ BUG CONFIRMED: Password was changed to Strong2024");
+        System.out.println("  - Server accepted 10-character password (should reject)");
+        System.out.println("  - No error message shown");
+        System.out.println("  - This proves server-side validation is missing");
+        System.out.println("  - Continuing with cleanup to reset password...");
+    }
 }

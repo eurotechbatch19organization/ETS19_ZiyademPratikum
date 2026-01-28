@@ -5,8 +5,11 @@ import com.ziyadem.utilities.BrowserUtils;
 import com.ziyadem.utilities.ConfigurationReader;
 import com.ziyadem.utilities.Driver;
 import org.junit.Assert;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
+
+import java.util.List;
 
 public class LoginPage extends BasePage {
 
@@ -23,6 +26,8 @@ public class LoginPage extends BasePage {
     @FindBy(xpath = "//div[@class='message-container container alert-color medium-text-center']")
     private WebElement errorMessage;
 
+    @FindBy(xpath = "//div[@class='message-container container alert-color medium-text-center']")
+    private WebElement loginErrorMessage;
 
     public void enterTheUserName() {
         username.sendKeys(ConfigurationReader.get("email"));
@@ -138,6 +143,42 @@ public class LoginPage extends BasePage {
         BrowserUtils.waitFor(5);
 
         System.out.println("✓ Logged in with username: " + usernameValue);
+    }
+
+    /**
+     * Check if login FAILED
+     * Returns true if error message is displayed
+     */
+    public boolean isLoginFailed() {
+            BrowserUtils.waitForPageToLoad(10);
+            BrowserUtils.waitFor(3);
+
+            List<WebElement> errorMessages = Driver.get().findElements(
+                    By.xpath("//div[@class='message-container container alert-color medium-text-center']")
+            );
+
+            if (errorMessages.size() > 0) {
+                return errorMessages.get(0).isDisplayed();
+            }
+
+            return false;
+    }
+
+    /**
+     * Verify login error message is displayed
+     */
+    public void verifyLoginErrorMessage() {
+        BrowserUtils.waitForVisibility(loginErrorMessage, 10);
+        String errorText = loginErrorMessage.getText().trim();
+
+        boolean errorFound = errorText.contains("Fehler") ||
+                errorText.contains("nicht korrekt") ||
+                errorText.contains("Passwort vergessen");
+
+        Assert.assertTrue("Login error message not found. Actual: '" + errorText + "'",
+                errorFound);
+
+        System.out.println("  - Error message: " + errorText);
     }
 }
 

@@ -1,4 +1,4 @@
-@sld
+
 Feature: Navigation bar functionality
   As a user
   I want to use the navigation bar

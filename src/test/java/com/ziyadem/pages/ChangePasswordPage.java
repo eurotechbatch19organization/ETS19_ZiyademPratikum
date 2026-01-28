@@ -4,6 +4,7 @@ import com.ziyadem.utilities.BrowserUtils;
 import com.ziyadem.utilities.ConfigurationReader;
 import com.ziyadem.utilities.Driver;
 import org.junit.Assert;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
@@ -155,6 +156,29 @@ public class ChangePasswordPage extends BasePage {
                 actualMessage.contains(expectedMessage));
 
         System.out.println("✓ Error message verified: " + actualMessage);
+    }
+
+    /**
+     * Force click Save Changes button using JavaScript
+     * Used for TC07 - testing validation bypass bug
+     */
+    public void forceClickSaveChanges() {
+        JavascriptExecutor js = (JavascriptExecutor) Driver.get();
+
+        // Scroll to button
+        js.executeScript("arguments[0].scrollIntoView(true);", saveChangesButton);
+        BrowserUtils.waitFor(1);
+
+        // Remove disabled attribute if exists
+        js.executeScript("arguments[0].removeAttribute('disabled');", saveChangesButton);
+
+        // Click button with JavaScript
+        js.executeScript("arguments[0].click();", saveChangesButton);
+
+        BrowserUtils.waitForPageToLoad(10);
+        BrowserUtils.waitFor(2);
+
+        System.out.println("  ⚠️ Button clicked via JavaScript (testing server validation)");
     }
 
     // Helper methods
