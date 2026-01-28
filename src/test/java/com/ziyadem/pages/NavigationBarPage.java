@@ -168,6 +168,51 @@ public class NavigationBarPage extends BasePage{
                 && !title.isBlank();
     }
 
+    /**
+     * Alt menüsü olan tüm kategoriler için
+     * dropdown menülerin belirtilen süre içinde
+     * açıldığını doğrular
+     */
+    public void verifyDropdownsOpenWithinOneSecond() {
+        for (WebElement category : categoriesWithSubmenu) {
+            hover(category);
+            WebDriverWait wait = new WebDriverWait(
+                    Driver.get(),
+                    Duration.ofSeconds(1));
+            WebElement dropdown = wait.until(
+                    ExpectedConditions.visibilityOf(getDropdown(category)));
+            Assert.assertTrue(dropdown.isDisplayed());
+        }
+    }
+
+    /**
+     * Alt menüsü olan ilk kategoriye güvenli şekilde hover yapar
+     * dropdown tamamen açılınca ilk subcategory linkine tıklar
+     *
+     * Bu method suite run sırasında oluşan
+     * stale / not interactable problemlerini önlemek için yazılmıştır
+     */
+    public void openFirstSubCategorySafely() {
+        WebDriverWait wait = new WebDriverWait(Driver.get(), Duration.ofSeconds(5));
+        Actions actions = new Actions(Driver.get());
+
+        // kategori HER SEFERİNDE yeniden bulunur
+        WebElement category = wait.until(
+                ExpectedConditions.visibilityOf(categoriesWithSubmenu.get(0)));
+        actions.moveToElement(category)
+                .pause(Duration.ofMillis(300))
+                .perform();
+        WebElement dropdown = wait.until(
+                ExpectedConditions.visibilityOf(getDropdown(category)));
+        WebElement subCategory = wait.until(
+                ExpectedConditions.elementToBeClickable(
+                        dropdown.findElement(By.xpath(".//a")))
+        );
+        subCategory.click();
+    }
+
+
+
 
 
 }

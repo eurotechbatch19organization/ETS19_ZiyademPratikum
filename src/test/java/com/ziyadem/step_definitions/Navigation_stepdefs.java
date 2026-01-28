@@ -1,14 +1,16 @@
 package com.ziyadem.step_definitions;
 
+import com.ziyadem.enums.UserType;
+import com.ziyadem.pages.LoginPage;
 import com.ziyadem.pages.NavigationBarPage;
 import com.ziyadem.utilities.ConfigurationReader;
 import com.ziyadem.utilities.Driver;
+import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.junit.Assert;
 import org.openqa.selenium.WebElement;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Navigation_stepdefs {
@@ -61,14 +63,18 @@ public class Navigation_stepdefs {
     @When("the user clicks on each category without submenu")
     public void the_user_clicks_on_each_category_without_submenu() {
         homeUrl = navigationBarPage.getCurrentUrl();
-
-        for (WebElement category : navigationBarPage.getCategoriesWithoutSubmenu()) {
+        int size = navigationBarPage.getCategoriesWithoutSubmenu().size();
+        for (int i = 0; i < size; i++) {
+            List<WebElement> categories = navigationBarPage.getCategoriesWithoutSubmenu();
+            WebElement category = categories.get(i);
             navigationBarPage.click(category);
+
             Assert.assertNotEquals(homeUrl, navigationBarPage.getCurrentUrl());
             Assert.assertFalse(navigationBarPage.getPageTitle().isBlank());
             navigationBarPage.navigateBack();
         }
     }
+
 
     @Then("the related category pages should be opened")
     public void the_related_category_pages_should_be_opened() {
@@ -84,7 +90,7 @@ public class Navigation_stepdefs {
 
     @When("clicks the first subcategory link")
     public void clicks_the_first_subcategory_link() {
-        navigationBarPage.getFirstSubCategoryLink().click();
+        navigationBarPage.openFirstSubCategorySafely();
     }
 
     @Then("a valid product listing or landing page should be opened")
@@ -105,7 +111,19 @@ public class Navigation_stepdefs {
     @Then("the category page should not be a wrong, empty or 404 page")
     public void the_category_page_should_not_be_a_wrong_empty_or_404_page() {
         Assert.assertTrue(navigationBarPage.isNotWrongCategoryPage());
+
     }
+    @When("the user hovers over each main category with submenu")
+    public void the_user_hovers_over_each_main_category_with_submenu() {
+        //then adımında doğrulama yapılıyor
+    }
+
+    @Then("the dropdown menu should appear within 1 second")
+    public void the_dropdown_menu_should_appear_within_one_second() {
+        navigationBarPage.verifyDropdownsOpenWithinOneSecond();
+    }
+
+
 
 
 
