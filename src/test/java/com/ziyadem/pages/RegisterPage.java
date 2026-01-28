@@ -102,7 +102,7 @@ public class RegisterPage extends BasePage {
 
         WebElement link = wait.until(
                 ExpectedConditions.visibilityOfElementLocated(
-                        By.linkText("Set your new password.")));
+                        By.linkText("Lege dein neues Passwort fest.")));
 
         String href = link.getAttribute("href");
 
