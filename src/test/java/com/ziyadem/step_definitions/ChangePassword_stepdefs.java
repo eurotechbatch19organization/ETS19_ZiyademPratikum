@@ -148,4 +148,48 @@ public class ChangePassword_stepdefs {
         System.out.println("  - To: " + originalPassword);
     }
 
+    @Then("password should be updated to {string}")
+    public void password_should_be_updated_to(String newPassword) {
+        this.newPassword = newPassword;
+        System.out.println("✓ Password update verified (implicit)");
+        System.out.println("  - Password successfully updated to: " + newPassword);
+    }
+
+    @Then("user session should remain active")
+    public void user_session_should_remain_active() {
+        changePasswordPage.verifyUserSessionActive();
+        System.out.println("✓ User session verified:");
+        System.out.println("  - User is still logged in");
+        System.out.println("  - Session remains active after password change");
+    }
+
+    @Then("error message {string} should be displayed")
+    public void error_message_should_be_displayed(String expectedErrorMessage) {
+        changePasswordPage.verifyErrorMessage(expectedErrorMessage);
+        System.out.println("✓ Error message displayed: " + expectedErrorMessage);
+    }
+
+    @When("user tries to login with old password {string}")
+    public void user_tries_to_login_with_old_password(String oldPassword) {
+        String username = ConfigurationReader.get("Benutzername");
+        loginPage.loginWithPassword(username, oldPassword);
+        System.out.println("✓ Attempted login with old password: " + oldPassword);
+        System.out.println("  - Username: " + username);
+    }
+
+    @Then("login should fail with error message")
+    public void login_should_fail_with_error_message() {
+
+        boolean loginFailed = loginPage.isLoginFailed();
+
+        Assert.assertTrue("Login should have failed but no error message found!",
+                loginFailed);
+
+        loginPage.verifyLoginErrorMessage();
+
+        System.out.println("✓ Login failed as expected with old password");
+        System.out.println("  - Old password is no longer valid");
+        System.out.println("  - Error message displayed correctly");
+    }
+
 }

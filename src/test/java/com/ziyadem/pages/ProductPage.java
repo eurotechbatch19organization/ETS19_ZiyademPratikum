@@ -15,12 +15,7 @@ import java.util.List;
 
 import static com.ziyadem.utilities.Driver.driver;
 
-public class ShoppingPage extends BasePage{
-
-
-
-    @FindBy(xpath = "(//a[@href='https://ziyadem.de/produkt-kategory/kuruyemis'])[1]")
-    private WebElement product;
+public class ProductPage extends BasePage{
 
     @FindBy(xpath = "//button[@class='single_add_to_cart_button button alt']")
     private WebElement addToCart;
@@ -41,6 +36,22 @@ public class ShoppingPage extends BasePage{
     private WebElement quantity;
 
     By quantityLocator = By.xpath("//input[@name='quantity']");
+
+    // Ürün sayfasındaki son seçilen miktarı burada tutacağız
+    private int urunSayfasiMiktari;
+
+    By productQuantityInput = By.cssSelector("form.cart input.qty");
+
+    // Miktar değiştirildikten sonra çağrılır
+    public void urunMiktariniKaydet() {
+        WebElement input = driver.findElement(productQuantityInput);
+        this.urunSayfasiMiktari = Integer.parseInt(input.getAttribute("value"));
+    }
+
+    public int getUrunSayfasiMiktari() {
+        return urunSayfasiMiktari;
+    }
+
     public int getQuantity(){
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
 
@@ -55,15 +66,20 @@ public class ShoppingPage extends BasePage{
     /**
      * Bu metod ürün artırma + butonuna tıklar.
      */
+    public void clickPlusButton(){
+        plusButton.click();
+    }
+    /**
+     * Bu metod ürün artırma + butonuna tıklar ve ürün miktarını doğrular
+     */
     public void clickPlusAndValidate(){
         int before = getQuantity();
         plusButton.click();
         int after = getQuantity();
-
         Assert.assertEquals(after,before+1);
     }
     /**
-     * Bu metod ürün eksiltme - butonuna tıklar.
+     * Bu metod ürün eksiltme - butonuna tıklar ve ürün miktarını doğrular
      */
     public void clickMinusAndValidate() {
         int before = getQuantity();
@@ -72,7 +88,6 @@ public class ShoppingPage extends BasePage{
 
         Assert.assertEquals(after, before - 1);
     }
-
     /**
      * Bu metod miktar alanını günceller
      */
@@ -80,30 +95,24 @@ public class ShoppingPage extends BasePage{
         this.quantity.clear();
         this.quantity.sendKeys(String.valueOf(quantity));
     }
-
     /**
      * Bu metod alışveriş sepetini güncelle butonuna tıklar.
      */
     public void clickUpdateCart(){
         updateCart.click();
     }
-
     /**
      * Bu metod alışveriş sepetini görüntüle butonuna tıklar.
      */
     public void clickViewShoppingCartBtn(){
         viewShoppingCartBtn.click();
     }
-
-
-
     /**
      * Bu metod sepete ekle butonuna tıklar.
      */
     public void clickAddToCart(){
         addToCart.click();
     }
-
     /**
      * Bu metod url'in alışveriş sayfasında olduğunu kontrol ediyor.
      */
@@ -112,46 +121,6 @@ public class ShoppingPage extends BasePage{
         String actualUrl= Driver.get().getCurrentUrl();
         Assert.assertEquals(expectedUrl,actualUrl);
     }
-
-    /**
-     * Bu method geçici sadece kuruyemis menusune tıklar.
-     */
-    public void clickToAnyProduct(){
-        product.click();
-    }
-
-    /**
-     * Bu method verilen productName e sahip urune tiklar
-     *
-     * @param productName
-     */
-    public void clickToProduct(String productName) {
-        WebDriverWait wait = new WebDriverWait(Driver.get(), Duration.ofSeconds(30));
-
-        // Önce ürünlerin gelmesini bekle
-        wait.until(ExpectedConditions.presenceOfElementLocated(
-                By.cssSelector("p.product-title a")
-        ));
-
-        List<WebElement> products =
-                Driver.get().findElements(By.cssSelector("p.product-title a"));
-
-        for (WebElement product : products) {
-            String text = product.getText().trim();
-
-            if (text.contains(productName)) {
-                ((JavascriptExecutor) Driver.get())
-                        .executeScript("arguments[0].scrollIntoView({block:'center'});", product);
-
-                wait.until(ExpectedConditions.elementToBeClickable(product));
-                BrowserUtils.clickWithJS(product);
-                return;
-            }
-        }
-
-        throw new RuntimeException("Ürün bulunamadı: " + productName);
-    }
-
     /**
      * Bu metod ürün sepete eklenmiş mi kontrol eder.
      * @param productName
@@ -175,15 +144,8 @@ public class ShoppingPage extends BasePage{
                 return;
             }
         }
-
         // Buraya geldiysek ürün yok demektir → test fail
         Assert.fail("Sepette ürün bulunamadı: " + productName);
     }
-
-    /**
-     * Bu metod ürün adedini kontrol eder.
-     *
-     */
-
 
 }
