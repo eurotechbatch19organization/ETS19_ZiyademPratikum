@@ -1,3 +1,4 @@
+
 Feature: Change Password Functionality
 
   Background:
@@ -6,12 +7,12 @@ Feature: Change Password Functionality
     When user logs in with valid credentials
     And user clicks account details page
     Then user is on the change password page
-  @jasmin
+
   Scenario: TC01 - Three password fields are displayed on change password page
     Then user should see Current Password field
     And user should see New Password field
     And user should see Confirm New Password field
-  @jasmin
+
   Scenario: TC02 - Password remains unchanged when all fields are left blank
     When user leaves "Current Password" field blank
     And user leaves "New Password" field blank
@@ -19,9 +20,8 @@ Feature: Change Password Functionality
     And user clicks Save Changes button
     Then success message "Kontodetails erfolgreich geändert." should be displayed
     And user should remain on change password page
-    And user logs out
-    And user should be able to login with original password "TestPass123!"
-  @jasmin
+    And user verifies password remains unchanged
+
   Scenario: TC03 - Password is successfully changed with valid data
     When user enters current password "TestPass123!"
     And user enters new password "NewSecure@Pass456"
@@ -30,11 +30,8 @@ Feature: Change Password Functionality
     Then success message "Kontodetails erfolgreich geändert." should be displayed
     And user logs out
     And user should be able to login with new password "NewSecure@Pass456"
-    And user clicks account details page
-    And user resets password back to original "TestPass123!"
-    And user logs out
-    And user should be able to login with original password "TestPass123!"
-  @jasmin
+    And user completes password reset cleanup with new password "NewSecure@Pass456"
+
 Scenario: TC04 - Password is successfully updated and success message is displayed
   When user enters current password "TestPass123!"
   And user enters new password "NewSecure@Pass456"
@@ -42,13 +39,8 @@ Scenario: TC04 - Password is successfully updated and success message is display
   And user clicks Save Changes button
   Then success message "Kontodetails erfolgreich geändert." should be displayed
   And password should be updated to "NewSecure@Pass456"
-  And user logs out
-  And user should be able to login with new password "NewSecure@Pass456"
-  And user clicks account details page
-  And user resets password back to original "TestPass123!"
-  And user logs out
-  And user should be able to login with original password "TestPass123!"
-  @jasmin
+  And user completes password reset cleanup with new password "NewSecure@Pass456"
+
   Scenario: TC05 - User remains logged in after successful password change
     When user enters current password "TestPass123!"
     And user enters new password "NewPassword@789"
@@ -57,13 +49,8 @@ Scenario: TC04 - Password is successfully updated and success message is display
     Then password should be updated to "NewPassword@789"
     And success message "Kontodetails erfolgreich geändert." should be displayed
     And user session should remain active
-    And user logs out
-    And user should be able to login with new password "NewPassword@789"
-    And user clicks account details page
-    And user resets password back to original "TestPass123!"
-    And user logs out
-    And user should be able to login with original password "TestPass123!"
-  @jasmin
+    And user completes password reset cleanup with new password "NewPassword@789"
+
   Scenario: TC06 - Password change fails when incorrect current password is entered
     When user enters current password "WrongPassword123!"
     And user enters new password "NewSecure@Pass456"
@@ -71,10 +58,9 @@ Scenario: TC04 - Password is successfully updated and success message is display
     And user clicks Save Changes button
     Then error message "Dein derzeitiges Passwort ist nicht korrekt." should be displayed
     And user should remain on change password page
-    And user logs out
-    And user should be able to login with original password "TestPass123!"
+    And user should remain on change password page
+    And user verifies password remains unchanged
 
-  @jasmin
   Scenario: TC08 - Error message when new password and confirm password don't match
     When user enters current password "TestPass123!"
     And user enters new password "NewPassword123!@"
@@ -82,27 +68,23 @@ Scenario: TC04 - Password is successfully updated and success message is display
     And user clicks Save Changes button
     Then error message "Die neuen Passwörter stimmen nicht überein." should be displayed
     And user should remain on change password page
-    And user logs out
-    And user should be able to login with original password "TestPass123!"
+    And user verifies password remains unchanged
 
-  @jasmin
   Scenario: TC09 - User cannot login with old password after successful password change
     When user enters current password "TestPass123!"
     And user enters new password "NewSecure@Pass456"
     And user enters confirm password "NewSecure@Pass456"
     And user clicks Save Changes button
     Then success message "Kontodetails erfolgreich geändert." should be displayed
-    And user logs out
-    And user navigates to login page
-    When user tries to login with old password "TestPass123!"
-    Then login should fail with error message
-    And user should be able to login with new password "NewSecure@Pass456"
-    And user clicks account details page
-    And user resets password back to original "TestPass123!"
-    And user logs out
-    And user should be able to login with original password "TestPass123!"
+    And user verifies old password fails and resets to original with new password "NewSecure@Pass456"
 
-
+  Scenario: TC07 - BUG: System accepts 10-character password (Client-Side Validation Only)
+    When user enters current password "TestPass123!"
+    And user enters new password "Strong2024"
+    And user enters confirm password "Strong2024"
+    And user attempts to bypass validation and click Save Changes
+    Then password was incorrectly changed due to bug
+    And user completes password reset cleanup with new password "Strong2024"
 
 
 

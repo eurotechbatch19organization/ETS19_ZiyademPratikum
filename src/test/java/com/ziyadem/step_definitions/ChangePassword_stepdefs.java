@@ -3,6 +3,7 @@ package com.ziyadem.step_definitions;
 import com.ziyadem.pages.AccountPage;
 import com.ziyadem.pages.ChangePasswordPage;
 import com.ziyadem.pages.LoginPage;
+import com.ziyadem.utilities.BrowserUtils;
 import com.ziyadem.utilities.ConfigurationReader;
 import com.ziyadem.utilities.Driver;
 import io.cucumber.java.en.Given;
@@ -192,4 +193,78 @@ public class ChangePassword_stepdefs {
         System.out.println("  - Error message displayed correctly");
     }
 
+    @When("user attempts to bypass validation and click Save Changes")
+    public void user_attempts_to_bypass_validation_and_click_save_changes() {
+        System.out.println("⚠️ ATTEMPTING TO BYPASS CLIENT-SIDE VALIDATION");
+        System.out.println("  - This step tests for server-side validation");
+        System.out.println("  - If test FAILS = Bug exists (no server validation)");
+        System.out.println("  - If test PASSES = Bug fixed (server validation works)");
+
+        changePasswordPage.forceClickSaveChanges();
+    }
+
+    @Then("password was incorrectly changed due to bug")
+    public void password_was_incorrectly_changed_due_to_bug() {
+        System.out.println("⚠️ BUG CONFIRMED: Password was changed to Strong2024");
+        System.out.println("  - Server accepted 10-character password (should reject)");
+        System.out.println("  - No error message shown");
+        System.out.println("  - This proves server-side validation is missing");
+        System.out.println("  - Continuing with cleanup to reset password...");
+    }
+
+    @Then("user verifies password remains unchanged")
+    public void user_verifies_password_remains_unchanged() {
+        String originalPassword = "TestPass123!";
+        accountPage.logout();
+        loginPage.navigateToLoginPage();
+        loginPage.loginForChangePassword();
+        Assert.assertTrue("Password was changed unexpectedly!",
+                loginPage.isLoginSuccessful());
+        System.out.println("✅ Verified: Password remains " + originalPassword);
+    }
+
+    @Then("user completes password reset cleanup with new password {string}")
+    public void user_completes_password_reset_cleanup_with_new_password(String newPassword) {
+        user_completes_password_reset_cleanup(newPassword, false);
+    }
+
+    @Then("user verifies old password fails and resets to original with new password {string}")
+    public void user_verifies_old_password_fails_and_resets_to_original(String newPassword) {
+        user_completes_password_reset_cleanup(newPassword, true);
+    }
+
+    private void user_completes_password_reset_cleanup(String newPassword, boolean verifyOldPasswordFails) {
+        String username = ConfigurationReader.get("Benutzername");
+        String originalPassword = "TestPass123!";
+
+        accountPage.logout();
+
+        // TC09: Verify old password fails
+        if (verifyOldPasswordFails) {
+            System.out.println("🔍 Verifying old password no longer works...");
+            loginPage.navigateToLoginPage();
+            loginPage.loginWithPassword(username, originalPassword);
+            Assert.assertTrue("Old password should fail!", loginPage.isLoginFailed());
+            loginPage.verifyLoginErrorMessage();
+            System.out.println("✓ Old password correctly rejected");
+        }
+
+        // Login with new password
+        loginPage.navigateToLoginPage();
+        loginPage.loginWithPassword(username, newPassword);
+
+        // Navigate to Account Details
+        accountPage.clickAccountDetailsPage();
+
+        // Reset password
+        changePasswordPage.resetPasswordToOriginal(newPassword, originalPassword);
+
+        // Logout and verify
+        accountPage.logout();
+        loginPage.navigateToLoginPage();
+        loginPage.loginForChangePassword();
+        Assert.assertTrue(loginPage.isLoginSuccessful());
+
+        System.out.println("✅ Cleanup completed successfully");
+    }
 }

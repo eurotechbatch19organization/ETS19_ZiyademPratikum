@@ -29,7 +29,6 @@ public class LoginPage extends BasePage {
     @FindBy(xpath = "//div[@class='message-container container alert-color medium-text-center']")
     private WebElement loginErrorMessage;
 
-
     public void enterTheUserName() {
         username.sendKeys(ConfigurationReader.get("email"));
     }
@@ -122,21 +121,6 @@ public class LoginPage extends BasePage {
         return !currentUrl.equals(loginUrl);
     }
 
-    public boolean isLoginFailed() {
-        BrowserUtils.waitForPageToLoad(10);
-        BrowserUtils.waitFor(3);
-
-        List<WebElement> errorMessages = Driver.get().findElements(
-                By.xpath("//div[@class='message-container container alert-color medium-text-center']")
-        );
-
-        if (errorMessages.size() > 0) {
-            return errorMessages.get(0).isDisplayed();
-        }
-
-        return false;
-    }
-
     /**
      * Login with specific password (for TC03 - testing new password)
      * Used when we need to login with a password different from config
@@ -161,6 +145,28 @@ public class LoginPage extends BasePage {
         System.out.println("✓ Logged in with username: " + usernameValue);
     }
 
+    /**
+     * Check if login FAILED
+     * Returns true if error message is displayed
+     */
+    public boolean isLoginFailed() {
+            BrowserUtils.waitForPageToLoad(10);
+            BrowserUtils.waitFor(3);
+
+            List<WebElement> errorMessages = Driver.get().findElements(
+                    By.xpath("//div[@class='message-container container alert-color medium-text-center']")
+            );
+
+            if (errorMessages.size() > 0) {
+                return errorMessages.get(0).isDisplayed();
+            }
+
+            return false;
+    }
+
+    /**
+     * Verify login error message is displayed
+     */
     public void verifyLoginErrorMessage() {
         BrowserUtils.waitForVisibility(loginErrorMessage, 10);
         String errorText = loginErrorMessage.getText().trim();
