@@ -2,7 +2,7 @@ Feature: Register Scenarios
 
   Background:
     Given The user is on the main page
-
+@wip
   Scenario: Successful Registration with Valid Data -TC02-[ZYD19-2]
     When The user navigates to the registration page
     And The user opens the email page

@@ -1,5 +1,6 @@
 package com.ziyadem.pages;
 
+import com.ziyadem.utilities.BrowserUtils;
 import com.ziyadem.utilities.ConfigurationReader;
 import com.ziyadem.utilities.Driver;
 import io.cucumber.java.en.When;
@@ -83,7 +84,7 @@ public class RegisterPage extends BasePage {
     }
     public void clickToEmailBox() {
         WebDriverWait wait = new WebDriverWait(Driver.get(), Duration.ofSeconds(15));
-
+        BrowserUtils.waitFor(5);
         WebElement mail = wait.until(
                 ExpectedConditions.elementToBeClickable(mailBox)
         );
