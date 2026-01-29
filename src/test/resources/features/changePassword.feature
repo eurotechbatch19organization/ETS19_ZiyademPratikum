@@ -77,13 +77,13 @@ Scenario: TC04 - Password is successfully updated and success message is display
     And user clicks Save Changes button
     Then success message "Kontodetails erfolgreich geändert." should be displayed
     And user verifies old password fails and resets to original with new password "NewSecure@Pass456"
-
-  Scenario: TC07 - BUG: System accepts 10-character password (Client-Side Validation Only)
+@bug
+Scenario: TC07 - BUG: System accepts 10-character password
     When user enters current password "TestPass123!"
     And user enters new password "Strong2024"
     And user enters confirm password "Strong2024"
     And user attempts to bypass validation and click Save Changes
-    Then password was incorrectly changed due to bug
+    Then system accepts invalid password due to bug
     And user completes password reset cleanup with new password "Strong2024"
 
 

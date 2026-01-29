@@ -10,6 +10,8 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.junit.Assert;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 
 public class ChangePassword_stepdefs {
 
@@ -203,15 +205,6 @@ public class ChangePassword_stepdefs {
         changePasswordPage.forceClickSaveChanges();
     }
 
-    @Then("password was incorrectly changed due to bug")
-    public void password_was_incorrectly_changed_due_to_bug() {
-        System.out.println("⚠️ BUG CONFIRMED: Password was changed to Strong2024");
-        System.out.println("  - Server accepted 10-character password (should reject)");
-        System.out.println("  - No error message shown");
-        System.out.println("  - This proves server-side validation is missing");
-        System.out.println("  - Continuing with cleanup to reset password...");
-    }
-
     @Then("user verifies password remains unchanged")
     public void user_verifies_password_remains_unchanged() {
         String originalPassword = "TestPass123!";
@@ -231,6 +224,12 @@ public class ChangePassword_stepdefs {
     @Then("user verifies old password fails and resets to original with new password {string}")
     public void user_verifies_old_password_fails_and_resets_to_original(String newPassword) {
         user_completes_password_reset_cleanup(newPassword, true);
+    }
+
+    @Then("system accepts invalid password due to bug")
+    public void system_accepts_invalid_password_due_to_bug() {
+        System.out.println("⚠️ BUG: Server accepts 10-char password");
+        Assert.fail("BUG ZYD19-7: Server accepts invalid password");
     }
 
     private void user_completes_password_reset_cleanup(String newPassword, boolean verifyOldPasswordFails) {
